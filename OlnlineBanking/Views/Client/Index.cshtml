@@ -1,0 +1,46 @@
+﻿@model OlnlineBanking.Models.ClientListViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div>
+    <div class="top-actions">
+         @Html.ActionLink("Add a new client", "Add")    
+    </div>
+    
+    <table class="grid-data">
+        <tr>
+            <th>Client Contact Number</th>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Date Of Birth</th>
+            <th>Phone Number</th>
+            <th>Status</th>
+            <th>Deposit</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var item in Model.Clients)
+        {
+            <tr ondblclick=" location.href = '@Url.Action("Edit", "Client", new {id = item.Id})' ">
+                <td>@item.ContractNumber</td>
+                <td>@item.LastName</td>
+                <td>@item.FirstName</td>
+                <td>@item.DateOfBirth.ToShortDateString()</td>
+                <td>@item.Phone</td>
+                <td>@item.Status</td>
+                <td><label>@Html.CheckBoxFor(m => item.Deposit, new {@class = "hidden"})<i class="checkbox"></i></label></td>
+                <td>
+                    @using (Html.BeginForm("Delete", "Client", FormMethod.Post, new {onsubmit = "return confirm('Do you really want to delete this client?')"}))
+                    {
+                        @Html.Hidden("Id", item.Id)
+                        <input type="submit" value="Delete"/>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="pager">
+        @Html.Pages(Model.PagingInfo, p => Url.Action("Index", new {page = p}))
+    </div>
+</div>

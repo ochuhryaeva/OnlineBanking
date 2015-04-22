@@ -1,0 +1,20 @@
+﻿@model OlnlineBanking.Models.UserLoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="form-default">
+    <h2 class="caption">Please enter your credentials</h2>
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        <div class="fields floats">
+            @Html.ValidationSummary(true)
+            @Html.EditorForModel()
+        </div>
+        <div class="actions floats">
+            @Html.ActionLink("Register new account", "Register")
+            <input type="submit" value="Submit" class="save"/>
+        </div>
+    }
+</div>

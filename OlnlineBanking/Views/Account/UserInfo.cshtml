@@ -1,0 +1,5 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <span>You are loggged in as @User.Identity.Name</span>
+    @Html.ActionLink("Logout", "Logout","Account");
+}

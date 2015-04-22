@@ -1,0 +1,24 @@
+﻿.field-validation-error    {color: #f00;font-size: 12px}
+.field-validation-valid    { display: none;}
+.input-validation-error    { border: 1px solid #f00; background-color: #fee; }
+.validation-summary-errors {
+    border: 1px solid red;
+    font-size: 12px;
+    font-weight: normal;
+    background-color: rgba(255,0,0,.1);
+    padding: 8px 10px;
+    color: red;
+}
+
+.validation-summary-errors ul {
+    margin: 0;
+    padding: 0;
+}
+.validation-summary-errors ul li {
+    margin: 0 0 0 20px;
+}
+.validation-summary-errors ul li:first-child:last-child {
+    margin: 0;
+    list-style: none;
+}
+.validation-summary-valid  { display: none;}

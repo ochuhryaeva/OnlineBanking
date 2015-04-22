@@ -1,0 +1,268 @@
+﻿@font-family: sans-serif,Arial;
+@color: #38d;
+@color-a:lighten(@color, 20%);
+@color-b:lighten(@color, 40%);
+@header-height:100px;
+@footer-height:@header-height/2;
+@fontcolor:#fff;
+
+.default-rules(@display: block, @position:relative){
+    display: @display;
+    position: @position;
+    box-sizing: border-box;
+}
+
+.floats::after{
+    content:'';
+    display:block;
+    position:relative;
+    float:none;
+    clear:both;
+    height:0;
+    padding:0;
+    margin:0;
+    overflow:hidden;
+}
+
+
+.hidden {position:absolute; width:0; height:0; opacity:0; margin:0; padding:0; overflow:hidden;}
+
+html, body {
+    height: 100%; 
+    margin:0; 
+    padding:0; 
+    font-family: @font-family;
+}
+
+
+#header {
+    .default-rules;
+    height:@header-height;
+    background-color:@color;
+}
+
+
+#body {
+    .default-rules(block, absolute);
+    top:@header-height;
+    bottom:@footer-height;
+    left:0;
+    right:0;
+    overflow:auto;
+    padding:20px;
+}
+
+#footer {
+    .default-rules(block, absolute);
+    height:@footer-height;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color:@color-a;
+    text-align:center;
+    color:@fontcolor;
+    line-height:@footer-height;
+}
+
+#header .logo{
+    @height:32px;
+    .default-rules;
+    text-align:center;
+    margin:0;
+    padding:0;
+
+    &>a{
+       .default-rules(inline-block);
+       margin-top:@height;
+       color:@fontcolor;
+       font-size:18px;
+       text-decoration:none;
+       vertical-align:middle;
+
+       &:before{
+            content: '';
+            .default-rules(inline-block);
+            width:@height;
+            height:@height;
+            border-radius:50%;
+            background:@fontcolor;
+            vertical-align:middle;
+            top:-3px;
+            left:-10px;
+       }
+    }
+}
+
+#header .userinfo{
+    .default-rules;
+    text-align:right;
+    color:@fontcolor;
+    margin:0;
+    margin-right:10px;
+    padding:0;
+}
+
+.grid-data{
+    .default-rules(table);
+    width:100%;
+    border:1px solid @color-b;
+    border-collapse: collapse;
+    th{
+        background-color:@color-a; 
+        color:@fontcolor;
+    }
+    td {text-align:center;user-select:none}
+    tr:nth-child(odd) td{
+        background-color:@color-b
+    }    
+}
+
+/* checkbox & radio */
+@checkbox-radio-primary-color:  #fff;
+@checkbox-radio-secondary-color:#75c141;
+
+.checkbox (@width:16px, @height:16px, @size:12px, @background:#ddd, @color:@checkbox-radio-secondary-color, @character:"") {
+    content:@character;
+    .default-rules(inline-block);
+    width:@width;
+    height:@height;
+    border-radius:2px;
+    font:normal bold @size/@height sans-serif, arial;
+    text-shadow:0 0 0 @color;
+    vertical-align:middle;
+    text-align:center;
+    color:@color;
+    background-color:@background;
+    transition:all .3s linear;
+}
+.checkbox-checked (@background:@checkbox-radio-primary-color, @character:"✓") {content:@character; background-color:@background;}
+
+.checkbox:before, .checkbox-after:after {.checkbox()}
+
+input {
+  &[type=checkbox],
+  &[type=radio] {
+    &:checked ~ .checkbox:before,
+    &:checked ~ .checkbox-after:after {.checkbox-checked()}
+  }
+}
+
+.form-default{
+    display:block;
+    max-width:500px;
+    margin:0 auto;
+}
+
+.form-default .fields .editor-label{
+    float:left;
+    width:36%;
+    box-sizing:border-box;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    height:40px;
+    text-align:right;
+    padding-right:10px;   
+}
+
+.form-default .fields .editor-field{
+    float:right;
+    width:64%;
+    height:40px;
+}
+
+.form-default .fields .editor-field input:not([type='checkbox']){
+    display:block;
+    position:relative;
+    box-sizing:border-box;
+    margin:0;
+    width:100%;       
+}
+
+.form-default .fields .field-validation-error{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:block;
+}
+
+.form-default .caption, .form-default .actions{
+    margin-left:36%;
+}
+
+.form-default .caption{
+    font-size:18px;
+}
+
+.form-default .message{
+    text-align:center;
+    font-size:18px;
+    font-weight:normal;
+    margin-top:100px;
+}
+
+
+.form-default .actions .cancel{
+    float:left;
+    display:inline-block;
+    text-decoration:none;
+    color:@color;
+} 
+
+.form-default .actions .save{
+    float:right;
+}
+
+.form-default .validation-summary-errors{
+    margin-left: 36%;  
+    margin-bottom: 19px;  
+}
+
+.valid + .field-validation-valid{
+    display:block;
+    position:relative;
+    &:before{
+        content:'✓';
+        font:normal normal 24px/0 sans-serif;
+        color:#75c141;
+        display: block;
+        position: absolute;
+        right: -32px;
+        top: -12px;
+    }
+}
+
+.top-actions{
+    text-align:right;
+}
+
+.pager{
+    display:block;
+    position:relative;
+    margin: 10px 0 0;
+    text-align:center;
+    a{
+          display: inline-block;
+          position: relative;
+          text-decoration:none;
+          box-sizing: border-box;
+          height: 24px;
+          min-width: 28px;
+          line-height: 24px;
+          padding: 0 6px;
+          margin: 0 1px;
+          background: #f0f0f0;
+          color: #333;
+          border: 1px solid #eee;
+          border-radius: 3px;
+          box-shadow: 0 1px #aaa,inset 0 5px 10px #fff;
+          text-align: center;
+          &:hover, &.active{
+              background:@color;
+              color:@fontcolor;
+              border-color:@color;
+              box-shadow:0 1px @color;
+          }  
+    }
+}
+   

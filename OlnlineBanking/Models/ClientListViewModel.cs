@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OlnlineBanking.Models
+{
+    public class ClientListViewModel
+    {
+        public PagingInfo PagingInfo { get; set; }
+        public IEnumerable<Client> Clients { get; set; } 
+    }
+}
