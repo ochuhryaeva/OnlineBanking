@@ -38,7 +38,15 @@ namespace OlnlineBanking.Controllers
                 else
                 {
                     RefreshErrors(loginResult);
-                    if (loginResult==LoginResult.LrWrongPassword) RefreshBlockStatus(userLoginViewModel.Login);
+                    if (loginResult == LoginResult.LrWrongPassword)
+                    {
+                        if (_passport.BlockUser(userLoginViewModel.Login, GetUserBlockAttemptCollection()))
+                        {
+                            User user = _passport.GetUserByLogin(userLoginViewModel.Login);
+                            if (user != null) SendBlockEmail(user.Login, user.Email);
+                            ModelState.AddModelError("", "Your user is blocked. Message with unblock information was sent on your email");
+                        }
+                    }
                     return View(userLoginViewModel);
                 }
             }
@@ -125,45 +133,22 @@ namespace OlnlineBanking.Controllers
                 case LoginResult.LrUserIsBlocked:
                     ModelState.AddModelError("","Your user is blocked");
                     break;
+                case LoginResult.LrError:
+                    ModelState.AddModelError("", "Error during login");
+                    break;
                 default:
                     break;
             }
         }
-
-        private void RefreshBlockStatus(string login)
-        {
-            if (ControllerContext.HttpContext.Session != null)
-            {
-                Dictionary<string, int> blockStatus = (Dictionary<string, int>)ControllerContext.HttpContext.Session["BlockStatus"];
-                blockStatus = blockStatus?? new Dictionary<string, int>();
-                if (!blockStatus.ContainsKey(login))
-                {
-                    blockStatus[login] = 1;
-                }
-                else
-                {
-                    blockStatus[login]++;
-                }
-                //TODO: Change on 5
-                //block user
-                if (blockStatus[login] == 3)
-                {
-                    _passport.BlockUser(login);
-                    blockStatus.Remove(login);
-                    User user = _passport.GetUserByLogin(login);
-                    if(user!=null) SendBlockEmail(user.Login,user.Email);
-                    ModelState.AddModelError("","Your user is blocked. Message with unblock information was sent on your email");
-                }
-                ControllerContext.HttpContext.Session["BlockStatus"] = blockStatus;
-            }
-        }
-
+        
         private void SendActivationEmail(string login, string email)
         {
             string subject = "Register confirmation";
-            //TODO: what to do with the port
             string confirmationLink = String.Empty;
-            if(Url!=null) confirmationLink = "http://localhost:50387" + Url.Action("ActivateUser", "Account", new { userName = login });
+            if (Url != null)
+            {
+                confirmationLink = Request.Url.GetLeftPart(UriPartial.Authority) + Url.Action("ActivateUser", "Account", new { userName = login });
+            }
             string body = "Enter the link for account activation: <a href=\"" + confirmationLink +"\">activate account</a>";
             _emailService.SendEmail(email,subject,body);
         }
@@ -171,10 +156,34 @@ namespace OlnlineBanking.Controllers
         private void SendBlockEmail(string login, string email)
         {
             string subject = "Block information";
-            string blockLink = "http://localhost:50387" + Url.Action("UnblockUser", "Account", new { userName = login });
+            string blockLink = String.Empty;
+            if (Url != null)
+            {
+                blockLink = Request.Url.GetLeftPart(UriPartial.Authority) + Url.Action("UnblockUser", "Account", new { userName = login });
+            }
             string body = "Enter the link to unblock your account: <a href=\"" + blockLink + "\">unblock account</a>";
             _emailService.SendEmail(email, subject, body);
         }
-        
+
+        private UserBlockAttemptCollection GetUserBlockAttemptCollection()
+        {
+            
+            UserBlockAttemptCollection userBlockAttemptCollection = null;
+            if (ControllerContext!=null && ControllerContext.HttpContext.Session != null)
+            {
+                userBlockAttemptCollection = (UserBlockAttemptCollection)ControllerContext.HttpContext.Session["UserBlockAttemptCollection"];
+            }
+            // create the userBlockAtemptCollection if there wasn't one in the session data
+            if (userBlockAttemptCollection == null)
+            {
+                userBlockAttemptCollection = new UserBlockAttemptCollection();
+                if (ControllerContext != null && ControllerContext.HttpContext.Session != null)
+                {
+                    ControllerContext.HttpContext.Session["UserBlockAttemptCollection"] = userBlockAttemptCollection;
+                }
+            }
+            return userBlockAttemptCollection;
+        }
+
     }
 }

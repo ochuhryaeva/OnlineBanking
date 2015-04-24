@@ -192,19 +192,24 @@
     </Compile>
     <Compile Include="HtmlHelpers\PagingHelpers.cs" />
     <Compile Include="Infrastructure\Abstract\IClientRepository.cs" />
+    <Compile Include="Infrastructure\Abstract\IConfig.cs" />
     <Compile Include="Infrastructure\Abstract\IEmailService.cs" />
     <Compile Include="Infrastructure\Abstract\IPassport.cs" />
     <Compile Include="Infrastructure\Abstract\IUserRepository.cs" />
     <Compile Include="Infrastructure\Concrete\ClientDBInitializer.cs" />
     <Compile Include="Infrastructure\Concrete\ClientRepository.cs" />
+    <Compile Include="Infrastructure\Concrete\ConfigManager.cs" />
     <Compile Include="Infrastructure\Concrete\EmailService.cs" />
     <Compile Include="Infrastructure\Concrete\EmailServiceContract.cs" />
     <Compile Include="Infrastructure\Concrete\Passport.cs" />
     <Compile Include="Infrastructure\Concrete\AuthenticationResult.cs" />
     <Compile Include="Infrastructure\Concrete\PassportContract.cs" />
+    <Compile Include="Infrastructure\Concrete\UserBlockAttempt.cs" />
     <Compile Include="Infrastructure\Concrete\UserDBContext.cs" />
     <Compile Include="Infrastructure\Concrete\UserDbInitializer.cs" />
     <Compile Include="Infrastructure\Concrete\UserRepository.cs" />
+    <Compile Include="Infrastructure\Config\MailSetting.cs" />
+    <Compile Include="Infrastructure\Config\PassportSetting.cs" />
     <Compile Include="Infrastructure\Filters\HandleErrorWithLogAttribute.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\ClientListViewModel.cs" />

@@ -16,10 +16,11 @@ namespace OlnlineBanking.Infrastructure.Abstract
     {
         LoginResult Login(UserLoginViewModel userLoginInfo);
         RegisterResult Register(UserRegisterViewModel userRegisterInfo);
+        bool CheckUserExistence(string login, string email);
         User GetUserByLogin(string login);
-        void ActivateUser(string userName);
-        void BlockUser(string userName);
-        void UnblockUser(string userName);
+        void ActivateUser(string login);
+        bool BlockUser(string login, UserBlockAttemptCollection userBlockCountingCollection);
+        void UnblockUser(string login);
         void Logout();
     }
 }

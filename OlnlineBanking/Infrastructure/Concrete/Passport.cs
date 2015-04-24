@@ -13,30 +13,40 @@ using OlnlineBanking.Models;
 
 namespace OlnlineBanking.Infrastructure.Concrete
 {
-    public class Passport: IPassport
+    public class Passport : IPassport
     {
+        private IUserRepository _userRepository;
+        private IConfig _configManager;
 
-        //TODO: add IUserRepository to AutoFac
-        readonly IUserRepository _userRepository = new UserRepository();
-        readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+        private readonly log4net.ILog _logger =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public Passport(IUserRepository userRepository, IConfig configManager)
+        {
+            _userRepository = userRepository;
+            _configManager = configManager;
+        }
+
         public LoginResult Login(UserLoginViewModel userLogin)
         {
             LoginResult loginResult = LoginResult.LrError;
-            User user = _userRepository.Users.FirstOrDefault(u => (u.Login == userLogin.Login) && (u.Password == userLogin.Password)&&
-                (u.IsActivated)&&(!u.IsBlocked));
+            User user =
+                _userRepository.Users.FirstOrDefault(
+                    u => (u.Login == userLogin.Login) && (u.Password == userLogin.Password) &&
+                         (u.IsActivated) && (!u.IsBlocked));
             if (user != null)
             {
-                FormsAuthentication.SetAuthCookie(userLogin.Login, userLogin.RememberMe);
+                if (FormsAuthentication.IsEnabled) FormsAuthentication.SetAuthCookie(userLogin.Login, userLogin.RememberMe);
                 loginResult = LoginResult.LrSuccess;
-            } 
+            }
             else
             {
                 User userError = _userRepository.Users.FirstOrDefault(u => (u.Login == userLogin.Login));
-                if (userError==null) loginResult=LoginResult.LrUserNotExist;
-                else if (!userError.IsActivated) loginResult=LoginResult.LrUserNotActivated;
-                else if (userError.IsBlocked) loginResult=LoginResult.LrUserIsBlocked;
-                else if ((userError.Login==userLogin.Login)&&(userError.Password!=userLogin.Password)) loginResult=LoginResult.LrWrongPassword;
+                if (userError == null) loginResult = LoginResult.LrUserNotExist;
+                else if (!userError.IsActivated) loginResult = LoginResult.LrUserNotActivated;
+                else if (userError.IsBlocked) loginResult = LoginResult.LrUserIsBlocked;
+                else if ((userError.Login == userLogin.Login) && (userError.Password != userLogin.Password))
+                    loginResult = LoginResult.LrWrongPassword;
             }
             return loginResult;
         }
@@ -47,7 +57,7 @@ namespace OlnlineBanking.Infrastructure.Concrete
             //check if user with the same login or email already exists
             if (CheckUserExistence(userRegisterInfo.Login, userRegisterInfo.Email))
             {
-                registerResult=RegisterResult.RrUserAlreadyExist;
+                registerResult = RegisterResult.RrUserAlreadyExist;
             }
             //add new user
             else
@@ -60,20 +70,20 @@ namespace OlnlineBanking.Infrastructure.Concrete
                     Password = userRegisterInfo.Password
                 };
                 _userRepository.SaveUser(user);
-                registerResult=RegisterResult.RrSuccess;
+                registerResult = RegisterResult.RrSuccess;
             }
             return registerResult;
         }
-        
+
         public void Logout()
         {
             FormsAuthentication.SignOut();
         }
 
 
-        public void ActivateUser(string userName)
+        public void ActivateUser(string login)
         {
-            User user = _userRepository.Users.FirstOrDefault(u=>u.Login==userName);
+            User user = _userRepository.Users.FirstOrDefault(u => u.Login == login);
             if (user != null)
             {
                 user.IsActivated = true;
@@ -81,29 +91,40 @@ namespace OlnlineBanking.Infrastructure.Concrete
             }
         }
 
-        public void UnblockUser(string userName)
+        public void UnblockUser(string login)
         {
-            User user = _userRepository.Users.FirstOrDefault(u => u.Login == userName);
+            User user = _userRepository.Users.FirstOrDefault(u => u.Login == login);
             if (user != null)
             {
                 user.IsBlocked = false;
                 _userRepository.SaveUser(user);
-                _logger.Info(String.Format("user with login: {0} was unblocked", userName));
+                _logger.Info(String.Format("user with login: {0} was unblocked", login));
             }
         }
 
-        public void BlockUser(string userName)
+        public bool BlockUser(string login, UserBlockAttemptCollection userBlockAttemptCollection)
         {
-            User user = _userRepository.Users.FirstOrDefault(u => u.Login == userName);
-            if (user != null)
+            bool result = false;
+            UserBlockAttempt userBlockAttempt = userBlockAttemptCollection.FirstOrDefault(u => (u.Login == login));
+            if (userBlockAttempt == null) 
+                userBlockAttemptCollection.Add(new UserBlockAttempt() {Login = login, LoginAttemptsCount = 1});
+            else userBlockAttempt.LoginAttemptsCount++;
+            if (userBlockAttemptCollection.FirstOrDefault(u=>(u.Login==login)&&(u.LoginAttemptsCount==_configManager.PassportSetting.BlockAttempts ))!=null)
             {
-                user.IsBlocked = true;
-                _userRepository.SaveUser(user);
-                _logger.Info(String.Format("user with login: {0} was blocked",userName));
+                User user = _userRepository.Users.FirstOrDefault(u => u.Login == login);
+                if (user != null)
+                {
+                    user.IsBlocked = true;
+                    _userRepository.SaveUser(user);
+                    userBlockAttemptCollection.Remove(userBlockAttempt);
+                    _logger.Info(String.Format("user with login: {0} was blocked", login));
+                    result = true;
+                }    
             }
+            return result;
         }
 
-        private bool CheckUserExistence(string login, string email)
+        public bool CheckUserExistence(string login, string email)
         {
             return (_userRepository.Users.FirstOrDefault(u => (u.Login == login) || (u.Email == email)) != null);
         }

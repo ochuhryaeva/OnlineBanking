@@ -25,13 +25,15 @@ namespace OlnlineBanking
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-
+      
             // Setup IoC container
             var builder = new ContainerBuilder();
             //to do binding
-            builder.Register(c => new ClientRepository()).As<IClientRepository>().InstancePerRequest();
-            builder.Register(c => new Passport()).As<IPassport>().InstancePerRequest();
-            builder.Register(c => new EmailService()).As<IEmailService>().InstancePerRequest();
+            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerRequest();
+            builder.RegisterType<ConfigManager>().As<IConfig>().SingleInstance();
+            builder.RegisterType<Passport>().As<IPassport>().InstancePerRequest();
+            builder.RegisterType<ClientRepository>().As<IClientRepository>().InstancePerRequest();
+            builder.RegisterType<EmailService>().As<IEmailService>().InstancePerRequest();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

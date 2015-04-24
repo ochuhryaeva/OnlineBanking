@@ -29,24 +29,35 @@ namespace OlnlineBanking.Infrastructure.Concrete
             return null;
         }
 
-        public void ActivateUser(string userName)
+        public void ActivateUser(string login)
         {
-            Contract.Requires(!string.IsNullOrEmpty(userName));
+            Contract.Requires(!string.IsNullOrEmpty(login));
         }
 
-        public void BlockUser(string userName)
+        public bool BlockUser(string login, UserBlockAttemptCollection userBlockAttemptCollection)
         {
-            Contract.Requires(!string.IsNullOrEmpty(userName));
+            Contract.Requires(!string.IsNullOrEmpty(login));
+            Contract.Requires(userBlockAttemptCollection != null);
+            return false;
         }
 
-        public void UnblockUser(string userName)
+        public void UnblockUser(string login)
         {
-            Contract.Requires(!string.IsNullOrEmpty(userName));
+            Contract.Requires(!string.IsNullOrEmpty(login));
         }
 
         public void Logout()
         {
             //    
+        }
+
+
+
+        public bool CheckUserExistence(string login, string email)
+        {
+            Contract.Requires(!String.IsNullOrEmpty(login));
+            Contract.Requires(!String.IsNullOrEmpty(email));
+            return false;
         }
     }
 }

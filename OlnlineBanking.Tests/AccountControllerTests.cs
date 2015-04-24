@@ -95,6 +95,107 @@ namespace OlnlineBanking.Tests
             mockIPassport.Verify(m => m.Login(It.IsAny<UserLoginViewModel>()),Times.Never);
             Assert.IsInstanceOf<ViewResult>(result);
         }
+        
+        [Test]
+        public void Can_ShowErrorViewIfLoginResultIsUserNotExist()
+        {
+            // Arrange - controller
+            Mock<IPassport> mockIPassport = GetIPassportMock();
+            Mock<IEmailService> mockIEmailService = GetIEmailServiceMock();
+            AccountController controller = InitAccountController(mockIPassport, mockIEmailService);
+            UserLoginViewModel userLoginViewModel = GetUserLoginViewModel();
+            mockIPassport.Setup(m => m.Login(userLoginViewModel)).Returns(LoginResult.LrUserNotExist);
+            //act
+            ActionResult result = controller.Login(userLoginViewModel);
+            //
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual(controller.ModelState.IsValid, false);
+        }
+
+        [Test]
+        public void Can_ShowErrorViewIfLoginResultIsUserNotActivated()
+        {
+            // Arrange - controller
+            Mock<IPassport> mockIPassport = GetIPassportMock();
+            Mock<IEmailService> mockIEmailService = GetIEmailServiceMock();
+            AccountController controller = InitAccountController(mockIPassport, mockIEmailService);
+            UserLoginViewModel userLoginViewModel = GetUserLoginViewModel();
+            mockIPassport.Setup(m => m.Login(userLoginViewModel)).Returns(LoginResult.LrUserNotActivated);
+            //act
+            ActionResult result = controller.Login(userLoginViewModel);
+            //
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual(controller.ModelState.IsValid, false);
+        }
+
+        [Test]
+        public void Can_ShowErrorViewIfLoginResultIsUserIsBlocked()
+        {
+            // Arrange - controller
+            Mock<IPassport> mockIPassport = GetIPassportMock();
+            Mock<IEmailService> mockIEmailService = GetIEmailServiceMock();
+            AccountController controller = InitAccountController(mockIPassport, mockIEmailService);
+            UserLoginViewModel userLoginViewModel = GetUserLoginViewModel();
+            mockIPassport.Setup(m => m.Login(userLoginViewModel)).Returns(LoginResult.LrUserIsBlocked);
+            //act
+            ActionResult result = controller.Login(userLoginViewModel);
+            //
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual(controller.ModelState.IsValid, false);
+        }
+
+        [Test]
+        public void Can_ShowErrorViewIfLoginResultIsError()
+        {
+            // Arrange - controller
+            Mock<IPassport> mockIPassport = GetIPassportMock();
+            Mock<IEmailService> mockIEmailService = GetIEmailServiceMock();
+            AccountController controller = InitAccountController(mockIPassport, mockIEmailService);
+            UserLoginViewModel userLoginViewModel = GetUserLoginViewModel();
+            mockIPassport.Setup(m => m.Login(userLoginViewModel)).Returns(LoginResult.LrError);
+            //act
+            ActionResult result = controller.Login(userLoginViewModel);
+            //
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual(controller.ModelState.IsValid, false);
+        }
+
+        [Test]
+        public void Can_MakeRedirectIfLoginResultIsSuccess()
+        {
+            // Arrange - controller
+            Mock<IPassport> mockIPassport = GetIPassportMock();
+            Mock<IEmailService> mockIEmailService = GetIEmailServiceMock();
+            AccountController controller = InitAccountController(mockIPassport, mockIEmailService);
+            UserLoginViewModel userLoginViewModel = GetUserLoginViewModel();
+            mockIPassport.Setup(m => m.Login(userLoginViewModel)).Returns(LoginResult.LrSuccess);
+            //act
+            ActionResult result = controller.Login(userLoginViewModel);
+            //
+            Assert.IsNotInstanceOf<ViewResult>(result);
+            Assert.AreEqual(controller.ModelState.IsValid, true);
+        }
+
+        [Test]
+        public void Can_SendEmailIfUserWasBlocked()
+        {
+            // Arrange - controller
+            Mock<IPassport> mockIPassport = GetIPassportMock();
+            Mock<IEmailService> mockIEmailService = GetIEmailServiceMock();
+            AccountController controller = InitAccountController(mockIPassport, mockIEmailService);
+            UserLoginViewModel userLoginViewModel = GetUserLoginViewModel();
+            mockIPassport.Setup(m => m.Login(userLoginViewModel)).Returns(LoginResult.LrWrongPassword);
+            mockIPassport.Setup(m => m.BlockUser(userLoginViewModel.Login,It.IsAny<UserBlockAttemptCollection>())).Returns(true);
+            string email = "1@1.com";
+            mockIPassport.Setup(m => m.GetUserByLogin(userLoginViewModel.Login))
+                .Returns(new User() {Login = userLoginViewModel.Login, Email = email});
+            //act
+            ActionResult result = controller.Login(userLoginViewModel);
+            //
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual(controller.ModelState.IsValid, false);
+            mockIEmailService.Verify(e => e.SendEmail(email,It.IsAny<string>(),It.IsAny<string>()));
+        }
 
         [Test]
         public void Can_ShowRegisterView()
@@ -227,5 +328,7 @@ namespace OlnlineBanking.Tests
             // Assert
             Assert.IsInstanceOf<PartialViewResult>(result);
         }
+
+        
     }
 }
