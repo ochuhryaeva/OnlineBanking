@@ -23,6 +23,7 @@ namespace OlnlineBanking.Models
         public string LastName { get; set; }
         [DataType(DataType.Date)]
         [Display(Name = "Date Of Birth")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
         public string Status { get; set; }
