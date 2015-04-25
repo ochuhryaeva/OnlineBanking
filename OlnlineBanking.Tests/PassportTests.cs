@@ -359,5 +359,29 @@ namespace OlnlineBanking.Tests
 
         }
 
+        [Test]
+        public void GetUserByLogin_ForExistLogin_ReturnCorrectUser()
+        {
+            //Arrange
+            Passport passport = GetPassport();
+            string userLogin = "login1";
+            //Act
+            User result = passport.GetUserByLogin(userLogin);
+            //Assert
+            Assert.AreEqual(userLogin,result.Login);
+        }
+
+        [Test]
+        public void GetUserByLogin_ForNotExistLogin_ReturnNull()
+        {
+            //Arrange
+            Passport passport = GetPassport();
+            string userLogin = "login10";
+            //Act
+            User result = passport.GetUserByLogin(userLogin);
+            //Assert
+            Assert.AreEqual(null, result);
+        }
+
     }
 }

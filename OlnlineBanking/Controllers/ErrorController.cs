@@ -11,9 +11,12 @@ namespace OlnlineBanking.Controllers
         //404 Error Handle
         public ActionResult PageNotFound()
         {
-            Response.StatusCode = 404;
-            Response.TrySkipIisCustomErrors = true;
-            return View();
+            if (Response != null)
+            {
+                Response.StatusCode = 404;
+                Response.TrySkipIisCustomErrors = true;    
+            }
+            return View("PageNotFound");
         }
     }
 }

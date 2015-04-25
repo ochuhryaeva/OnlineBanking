@@ -15,26 +15,32 @@ namespace OlnlineBanking.Tests
     [TestFixture]
     public class ClientControllerTests
     {
-        private Mock<IClientRepository> GetIClientRepositoryMock()
+        private Mock<IClientRepository> _clientRepositoryMock;
+
+        [SetUp]
+        public void SetUp()
         {
-            Mock<IClientRepository> mock = new Mock<IClientRepository>();
-            mock.Setup(m => m.Clients).Returns(new Client[] {
+            _clientRepositoryMock = new Mock<IClientRepository>();
+            _clientRepositoryMock.Setup(m => m.Clients).Returns(new Client[] {
                 new Client {Id = 1, ContractNumber = "P1"},
                 new Client {Id = 2, ContractNumber = "P2"},
                 new Client {Id = 3, ContractNumber = "P3"},
                 new Client {Id = 4, ContractNumber = "P4"},
                 new Client {Id = 5, ContractNumber = "P5"}
             });
-
-            return mock;
+        }
+        
+        private ClientController GetClientController()
+        {
+            return new ClientController(_clientRepositoryMock.Object);
         }
 
         [Test]
         public void Can_Paginate()
         {
             // Arrange
-            IClientRepository mockClientRepository = GetIClientRepositoryMock().Object;
-            ClientController controller = new ClientController(mockClientRepository){PageSize = 3};
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
 
             // Act  
             ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2)). Model;
@@ -79,8 +85,8 @@ namespace OlnlineBanking.Tests
         {
 
             // Arrange
-            IClientRepository mockClientRepository = GetIClientRepositoryMock().Object;
-            ClientController controller = new ClientController(mockClientRepository) { PageSize = 3 };
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
 
             // Act
             ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2)).Model;
@@ -98,8 +104,8 @@ namespace OlnlineBanking.Tests
         {
 
             // Arrange - create the mock repository
-            IClientRepository mockClientRepository = GetIClientRepositoryMock().Object;
-            ClientController controller = new ClientController(mockClientRepository) { PageSize = 3 };
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
 
             // Act
             Client client1 = ((ViewResult)controller.Edit(1)).Model as Client;
@@ -115,10 +121,9 @@ namespace OlnlineBanking.Tests
         [Test]
         public void Can_Edit_NonExistent_Client()
         {
-
             // Arrange - create the mock repository
-            IClientRepository mockClientRepository = GetIClientRepositoryMock().Object;
-            ClientController controller = new ClientController(mockClientRepository) { PageSize = 3 };
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
 
             // Act
             Client client = ((ViewResult)controller.Edit(10)).Model as Client;
@@ -130,10 +135,9 @@ namespace OlnlineBanking.Tests
         [Test]
         public void Can_AddClient()
         {
-
             // Arrange - create the mock repository
-            IClientRepository mockClientRepository = GetIClientRepositoryMock().Object;
-            ClientController controller = new ClientController(mockClientRepository) { PageSize = 3 };
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
 
             // Act
             Client client = ((ViewResult)controller.Add()).Model as Client;
@@ -147,8 +151,8 @@ namespace OlnlineBanking.Tests
         {
 
             // Arrange - create mock repository
-            Mock<IClientRepository> mock = GetIClientRepositoryMock();
-            ClientController controller = new ClientController(mock.Object) { PageSize = 3 };
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
             
             Client client = new Client()
             {
@@ -164,7 +168,7 @@ namespace OlnlineBanking.Tests
             ActionResult result = controller.Edit(client);
 
             // Assert - check that the repository was called
-            mock.Verify(m => m.SaveClient(client));
+            _clientRepositoryMock.Verify(m => m.SaveClient(client));
             // Assert - check the method result type
             Assert.IsNotInstanceOf<ViewResult>(result);
         }
@@ -174,8 +178,8 @@ namespace OlnlineBanking.Tests
         {
 
             // Arrange - create mock repository
-            Mock<IClientRepository> mock = GetIClientRepositoryMock();
-            ClientController controller = new ClientController(mock.Object) { PageSize = 3 };
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
 
             Client client = new Client()
             {
@@ -195,9 +199,22 @@ namespace OlnlineBanking.Tests
             ActionResult result = controller.Edit(client);
 
             // Assert - check that the repository was not called
-            mock.Verify(m => m.SaveClient(It.IsAny<Client>()), Times.Never());
+            _clientRepositoryMock.Verify(m => m.SaveClient(It.IsAny<Client>()), Times.Never());
             // Assert - check the method result type
             Assert.IsInstanceOf<ViewResult>(result);
+        }
+
+        [Test]
+        public void Delete_CallDeleteMethod_AndRedirect()
+        {
+            //arrange
+            ClientController controller = GetClientController();
+            int clientId = 1;
+            //act
+            ActionResult result = controller.Delete(clientId);
+            //assert
+            _clientRepositoryMock.Verify(m=>m.DeleteClient(clientId));
+            Assert.IsInstanceOf<RedirectToRouteResult>(result);
         }
     }
 }
