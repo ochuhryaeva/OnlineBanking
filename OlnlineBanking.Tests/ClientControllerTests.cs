@@ -161,7 +161,7 @@ namespace OlnlineBanking.Tests
                 FirstName = "First", 
                 DateOfBirth = new DateTime(1976,7,7),
                 Deposit = false,Phone = "4343",
-                Status = "Classic"
+                Status = ClientStatus.Classic
             };
 
             // Act - try to save the product
@@ -189,7 +189,7 @@ namespace OlnlineBanking.Tests
                 DateOfBirth = new DateTime(1976, 7, 7),
                 Deposit = false,
                 Phone = "4343",
-                Status = "Classic"
+                Status = ClientStatus.Classic
             };
 
             // Arrange - add an error to the model state

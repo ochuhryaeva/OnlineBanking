@@ -7,6 +7,8 @@ using System.Web.Mvc;
 
 namespace OlnlineBanking.Models
 {
+    public enum ClientStatus { Classic, Vip }
+
     public class Client
     {
         [HiddenInput(DisplayValue=false)]
@@ -26,7 +28,7 @@ namespace OlnlineBanking.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
-        public string Status { get; set; }
+        public ClientStatus Status { get; set; }
         public bool Deposit { get; set; }
     }
 }
