@@ -8,7 +8,7 @@ using OlnlineBanking.Models;
 
 namespace OlnlineBanking.Infrastructure.Concrete
 {
-    public class UserDbInitializer : DropCreateDatabaseAlways<UserDbContext>
+    public class UserDbInitializer : CreateDatabaseIfNotExists<UserDbContext>
     {
         protected override void Seed(UserDbContext db)
         {

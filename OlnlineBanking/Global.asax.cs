@@ -19,9 +19,8 @@ namespace OlnlineBanking
     {
         protected void Application_Start()
         {
-            //TODO: init db only if db isn't exist
-            //Database.SetInitializer(new ClientDbInitializer());
-            //Database.SetInitializer(new UserDbInitializer());
+            Database.SetInitializer(new ClientDbInitializer());
+            Database.SetInitializer(new UserDbInitializer());
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
