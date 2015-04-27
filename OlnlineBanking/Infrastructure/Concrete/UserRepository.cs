@@ -11,7 +11,13 @@ namespace OlnlineBanking.Infrastructure.Concrete
 {
     public class UserRepository:IUserRepository
     {
-        UserDbContext _context = new UserDbContext();
+        UserDbContext _context;
+
+        public UserRepository(UserDbContext context)
+        {
+            _context = context;
+        }
+
         public IEnumerable<User> Users
         {
             get
@@ -32,7 +38,6 @@ namespace OlnlineBanking.Infrastructure.Concrete
                 User userEntry = _context.Users.Find(user.Id);
                 if (userEntry != null)
                 {
-                    _context.Entry(userEntry).State = EntityState.Modified;
                     foreach (var property in user.GetType().GetProperties())
                     {
                         var value = user.GetType().GetProperty(property.Name).GetValue(user);

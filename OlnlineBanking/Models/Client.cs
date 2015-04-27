@@ -28,6 +28,7 @@ namespace OlnlineBanking.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
         public string Phone { get; set; }
+        [Required(ErrorMessage = "Please select status")]
         public ClientStatus Status { get; set; }
         public bool Deposit { get; set; }
     }

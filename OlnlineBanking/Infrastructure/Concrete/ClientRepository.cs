@@ -9,11 +9,15 @@ using OlnlineBanking.Models;
 
 namespace OlnlineBanking.Infrastructure.Concrete
 {
-    class ClientRepository:IClientRepository
+    public class ClientRepository:IClientRepository
     {
-        //private static int counter = 0;
-        //public ClientRepository() { System.Diagnostics.Debug.WriteLine(string.Format("Instance {0} created",++counter));}
-        private ClientDbContext _context = new ClientDbContext();
+        //private ClientDbContext _context = new ClientDbContext();
+        private ClientDbContext _context;
+
+        public ClientRepository(ClientDbContext context)
+        {
+            _context = context;
+        }
 
         public IEnumerable<Client> Clients
         {
@@ -23,7 +27,7 @@ namespace OlnlineBanking.Infrastructure.Concrete
             }
         }
 
-        public void SaveClient(Client client)
+        public int SaveClient(Client client)
         {
             if (client.Id == 0)
             {
@@ -34,7 +38,6 @@ namespace OlnlineBanking.Infrastructure.Concrete
                 Client clientEntry = _context.Clients.Find(client.Id);
                 if (clientEntry != null)
                 {
-                    _context.Entry(clientEntry).State = EntityState.Modified;
                     foreach (var property in client.GetType().GetProperties())
                     {
                         var value = client.GetType().GetProperty(property.Name).GetValue(client);
@@ -43,6 +46,7 @@ namespace OlnlineBanking.Infrastructure.Concrete
                 }
             }
             _context.SaveChanges();
+            return client.Id;
         }
 
 

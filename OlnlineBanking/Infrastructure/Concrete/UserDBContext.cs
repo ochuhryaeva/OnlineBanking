@@ -10,6 +10,6 @@ namespace OlnlineBanking.Infrastructure.Concrete
 {
     public class UserDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public virtual IDbSet<User> Users { get; set; }
     }
 }

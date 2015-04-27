@@ -19,6 +19,7 @@ namespace OlnlineBanking
     {
         protected void Application_Start()
         {
+            //TODO: init db only if db isn't exist
             //Database.SetInitializer(new ClientDbInitializer());
             //Database.SetInitializer(new UserDbInitializer());
 
@@ -29,9 +30,11 @@ namespace OlnlineBanking
             // Setup IoC container
             var builder = new ContainerBuilder();
             //to do binding
+            builder.RegisterType<UserDbContext>().InstancePerRequest();
             builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerRequest();
             builder.RegisterType<ConfigManager>().As<IConfig>().SingleInstance();
             builder.RegisterType<Passport>().As<IPassport>().InstancePerRequest();
+            builder.RegisterType<ClientDbContext>().InstancePerRequest();
             builder.RegisterType<ClientRepository>().As<IClientRepository>().InstancePerRequest();
             builder.RegisterType<EmailService>().As<IEmailService>().InstancePerRequest();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());

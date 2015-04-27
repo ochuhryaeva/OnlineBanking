@@ -5,6 +5,6 @@ namespace OlnlineBanking.Infrastructure.Concrete
 {
     public class ClientDbContext:DbContext
     {
-        public DbSet<Client> Clients { get; set; }
+        public virtual IDbSet<Client> Clients { get; set; }
     }
 }

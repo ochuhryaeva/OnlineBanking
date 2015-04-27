@@ -174,8 +174,6 @@ namespace OlnlineBanking.Tests
             //act
             ActionResult result = controller.Login(userLoginViewModel);
             //
-            Assert.IsInstanceOf<ViewResult>(result);
-            Assert.AreEqual(controller.ModelState.IsValid, false);
             _emailServiceMock.Verify(e => e.SendEmail(email,It.IsAny<string>(),It.IsAny<string>()));
         }
 
@@ -319,6 +317,18 @@ namespace OlnlineBanking.Tests
             // Assert
             Assert.IsInstanceOf<ViewResult>(result);
             Assert.AreEqual("message",((ViewResult)result).ViewName.ToLower());
+        }
+
+        [Test]
+        public void UserIsBlocked_ShowViewMessage()
+        {
+            // Arrange - controller
+            AccountController controller = InitAccountController();
+            // Act
+            ActionResult result = controller.UserIsBlocked();
+            // Assert
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.AreEqual("message", ((ViewResult)result).ViewName.ToLower());
         }
 
         [Test]

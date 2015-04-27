@@ -44,7 +44,9 @@ namespace OlnlineBanking.Controllers
                         {
                             User user = _passport.GetUserByLogin(userLoginViewModel.Login);
                             if (user != null) SendBlockEmail(user.Login, user.Email);
-                            ModelState.AddModelError("", "Your user is blocked. Message with unblock information was sent on your email");
+                            //TODO: test this
+                            return RedirectToAction("UserIsBlocked");
+                            //ModelState.AddModelError("", "Your user is blocked. Message with unblock information was sent on your email");
                         }
                     }
                     return View(userLoginViewModel);
@@ -116,6 +118,12 @@ namespace OlnlineBanking.Controllers
         public ActionResult NeedActivate()
         {
             string msg = "The letter with activation was sent on your email";
+            return View("Message", (object)msg);
+        }
+
+        public ActionResult UserIsBlocked()
+        {
+            string msg = "Your user is blocked. Message with unblock information was sent on your email";
             return View("Message", (object)msg);
         }
 

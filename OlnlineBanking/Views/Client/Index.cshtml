@@ -33,6 +33,7 @@
                 <td>
                     @using (Html.BeginForm("Delete", "Client", FormMethod.Post, new {onsubmit = "return confirm('Do you really want to delete this client?')"}))
                     {
+                        @Html.Hidden("CurrentPage",Model.PagingInfo.CurrentPage)
                         @Html.Hidden("Id", item.Id)
                         <input type="submit" value="Delete"/>
                     }

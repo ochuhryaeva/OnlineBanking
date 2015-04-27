@@ -10,7 +10,7 @@ namespace OlnlineBanking.Infrastructure.Abstract
     public interface IClientRepository
     {
         IEnumerable<Client> Clients { get; }
-        void SaveClient(Client client);
+        int SaveClient(Client client);
         void DeleteClient(int clientId);
     }
 }
