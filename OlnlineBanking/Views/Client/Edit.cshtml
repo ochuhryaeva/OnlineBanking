@@ -13,7 +13,7 @@
             @Html.EditorForModel()
         </div>
         <div class="actions floats">
-            @Html.ActionLink("Cancel", "Index", null, new { @class = "cancel button" })
+            <a class="cancel button" href="@ViewBag.ReturnUrl">Cancel</a>
             <input type="submit" class="save" value="Save" />
         </div>
     }
