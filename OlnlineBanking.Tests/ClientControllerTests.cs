@@ -82,11 +82,11 @@ namespace OlnlineBanking.Tests
                 if (property.Name.ToLower() != "id")
                 {
                     string propertyName = property.Name;
-                    ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(1, propertyName, Orderring.Asc)).Model;
+                    ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(1, propertyName, Ordering.Asc)).Model;
                     // Assert
                     SortedInfo sortedInfo = result.SortedInfo;
                     Assert.AreEqual(propertyName, sortedInfo.SortedField);
-                    Assert.AreEqual(Orderring.Asc, sortedInfo.SortedOrder);
+                    Assert.AreEqual(Ordering.Asc, sortedInfo.SortedOrder);
     
                 }
             }
@@ -102,11 +102,11 @@ namespace OlnlineBanking.Tests
                 if (property.Name.ToLower() != "id")
                 {
                     string propertyName = property.Name;
-                    ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(1, propertyName, Orderring.Desc)).Model;
+                    ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(1, propertyName, Ordering.Desc)).Model;
                     // Assert
                     SortedInfo sortedInfo = result.SortedInfo;
                     Assert.AreEqual(propertyName, sortedInfo.SortedField);
-                    Assert.AreEqual(Orderring.Desc, sortedInfo.SortedOrder);
+                    Assert.AreEqual(Ordering.Desc, sortedInfo.SortedOrder);
 
                 }
             }
@@ -119,7 +119,7 @@ namespace OlnlineBanking.Tests
             ClientController controller = GetClientController();
             controller.PageSize = 3;
             // Act
-            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2, "ContractNumber", Orderring.Desc)).Model;
+            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2, "ContractNumber", Ordering.Desc)).Model;
             Client[] clients = result.Clients.ToArray();
             Assert.IsTrue(clients.Length == 2);
             Assert.AreEqual(clients[0].ContractNumber, "P2");
@@ -133,7 +133,7 @@ namespace OlnlineBanking.Tests
             ClientController controller = GetClientController();
             controller.PageSize = 3;
             // Act
-            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2, "ContractNumber", Orderring.Asc)).Model;
+            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2, "ContractNumber", Ordering.Asc)).Model;
             Client[] clients = result.Clients.ToArray();
             Assert.IsTrue(clients.Length == 2);
             Assert.AreEqual(clients[0].ContractNumber, "P4");

@@ -20,7 +20,7 @@ namespace OlnlineBanking.Controllers
             _clientRepository = clientRepository;
         }
         
-        public ActionResult Index(int page=1, string sortedField ="", Orderring sortedOrder=Orderring.Asc, ClientStatus? statusFilter = null)
+        public ActionResult Index(int page=1, string sortedField ="", Ordering sortedOrder=Ordering.Asc, ClientStatus? statusFilter = null)
         {
             PagingInfo pagingInfo = MakePagingInfo(page);
             SortedInfo sortedInfo = MakeSortedInfo(sortedField, sortedOrder);
@@ -40,7 +40,7 @@ namespace OlnlineBanking.Controllers
             return pagingInfo;
         }
         
-        private SortedInfo MakeSortedInfo(string sortedField = "", Orderring sortedOrder = Orderring.Asc)
+        private SortedInfo MakeSortedInfo(string sortedField = "", Ordering sortedOrder = Ordering.Asc)
         {
             SortedInfo sortedInfo = new SortedInfo()
             {
@@ -83,8 +83,12 @@ namespace OlnlineBanking.Controllers
             }
             IEnumerable<Client> clients = _clientRepository.Clients;
 
-            clients = sortedInfo.SortedOrder == Orderring.Asc ? _clientRepository.Clients.OrderBy(orderByField) : _clientRepository.Clients.OrderByDescending(orderByField);
+            clients = sortedInfo.SortedOrder == Ordering.Asc ? _clientRepository.Clients.OrderBy(orderByField) : _clientRepository.Clients.OrderByDescending(orderByField);
             if (statusFilter.HasValue) clients = clients.Where(c => c.Status == statusFilter);
+        
+            //we need reassign pagingInfo.TotalItems because of filters
+            pagingInfo.TotalItems = clients.Count();
+
             clients = clients.Skip((pagingInfo.CurrentPage - 1)*pagingInfo.ItemsPerPage).Take(pagingInfo.ItemsPerPage);
    
             ClientListViewModel clientListViewModel = new ClientListViewModel()

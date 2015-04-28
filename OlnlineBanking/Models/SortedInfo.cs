@@ -5,7 +5,7 @@ using System.Web;
 
 namespace OlnlineBanking.Models
 {
-    public enum Orderring
+    public enum Ordering
     {
         Asc,
         Desc
@@ -14,6 +14,6 @@ namespace OlnlineBanking.Models
     public class SortedInfo
     {
         public string SortedField { get; set; }
-        public Orderring SortedOrder { get; set; }
+        public Ordering SortedOrder { get; set; }
     }
 }
