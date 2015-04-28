@@ -7,18 +7,24 @@
 
 <div>
     <div class="top-actions">
-         @Html.ActionLink("Add a new client", "Add", new {returnUrl = Request.Url.PathAndQuery})    
+        @using (Html.BeginForm("Index","Client",FormMethod.Get,new {}))
+        {
+            @Html.DropDownListFor(m => m.StatusFilter,
+                new SelectList(new[] { "All" }.Concat(Enum.GetNames(typeof(ClientStatus))), Model.StatusFilter.ToString()))
+            <input type="submit" value="filter"/>
+        }
+        @Html.ActionLink("Add a new client", "Add", new {returnUrl = Request.Url.PathAndQuery})
     </div>
-    
+
     <table class="grid-data">
         <tr>
             <th>
                 @Html.ActionLink("Client Contract Number", "Index", new
-                   {
-                       page = @Model.PagingInfo.CurrentPage,
-                       sortedField = "contractnumber",
-                       sortedOrder = (Model.SortedInfo.SortedField.ToLower()=="contractnumber" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
-                   })
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "contractnumber",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "contractnumber" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
             </th>
             <th>
                 @Html.ActionLink("Last Name", "Index", new
@@ -79,7 +85,7 @@
                 <td>@item.DateOfBirth.ToShortDateString()</td>
                 <td>@item.Phone</td>
                 <td>@item.Status</td>
-                <td><label>@Html.CheckBoxFor(m => item.Deposit, new {@class = "hidden", disabled="disabled"})<i class="checkbox"></i></label></td>
+                <td><label>@Html.CheckBoxFor(m => item.Deposit, new {@class = "hidden", disabled = "disabled"})<i class="checkbox"></i></label></td>
                 <td>
                     @using (Html.BeginForm("Delete", "Client", FormMethod.Post, new {onsubmit = "return confirm('Do you really want to delete this client?')"}))
                     {

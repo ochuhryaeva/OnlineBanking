@@ -20,11 +20,11 @@ namespace OlnlineBanking.Controllers
             _clientRepository = clientRepository;
         }
         
-        public ActionResult Index(int page=1, string sortedField ="", Orderring sortedOrder=Orderring.Asc)
+        public ActionResult Index(int page=1, string sortedField ="", Orderring sortedOrder=Orderring.Asc, ClientStatus? statusFilter = null)
         {
             PagingInfo pagingInfo = MakePagingInfo(page);
             SortedInfo sortedInfo = MakeSortedInfo(sortedField, sortedOrder);
-            ClientListViewModel clientListViewModel = makeClientListViewModel(pagingInfo, sortedInfo);
+            ClientListViewModel clientListViewModel = makeClientListViewModel(pagingInfo, sortedInfo, statusFilter);
             return View(clientListViewModel);
         }
 
@@ -39,7 +39,7 @@ namespace OlnlineBanking.Controllers
             };
             return pagingInfo;
         }
-
+        
         private SortedInfo MakeSortedInfo(string sortedField = "", Orderring sortedOrder = Orderring.Asc)
         {
             SortedInfo sortedInfo = new SortedInfo()
@@ -50,7 +50,7 @@ namespace OlnlineBanking.Controllers
             return sortedInfo;
         }
 
-        private ClientListViewModel makeClientListViewModel(PagingInfo pagingInfo, SortedInfo sortedInfo)
+        private ClientListViewModel makeClientListViewModel(PagingInfo pagingInfo, SortedInfo sortedInfo, ClientStatus? statusFilter)
         {
             //we should form linq query with sorted info and paging info 
             Func<Client,string> orderByField = client => client.ContractNumber;
@@ -84,12 +84,14 @@ namespace OlnlineBanking.Controllers
             IEnumerable<Client> clients = _clientRepository.Clients;
 
             clients = sortedInfo.SortedOrder == Orderring.Asc ? _clientRepository.Clients.OrderBy(orderByField) : _clientRepository.Clients.OrderByDescending(orderByField);
+            if (statusFilter.HasValue) clients = clients.Where(c => c.Status == statusFilter);
             clients = clients.Skip((pagingInfo.CurrentPage - 1)*pagingInfo.ItemsPerPage).Take(pagingInfo.ItemsPerPage);
    
             ClientListViewModel clientListViewModel = new ClientListViewModel()
             {
                 PagingInfo = pagingInfo,
                 SortedInfo = sortedInfo,
+                StatusFilter = statusFilter,
                 Clients = clients
             };
             return clientListViewModel;
