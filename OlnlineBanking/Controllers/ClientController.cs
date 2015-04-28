@@ -52,7 +52,7 @@ namespace OlnlineBanking.Controllers
 
         private ClientListViewModel makeClientListViewModel(PagingInfo pagingInfo, SortedInfo sortedInfo)
         {
-            //we should form linq query with sorted info and page info
+            //we should form linq query with sorted info and paging info
             Func<Client,string> orderByField = client => client.ContractNumber;
             switch (sortedInfo.SortedField.ToLower())
             {
