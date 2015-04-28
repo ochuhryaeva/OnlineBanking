@@ -1,4 +1,5 @@
-﻿@model OlnlineBanking.Models.ClientListViewModel
+﻿@using OlnlineBanking.Models
+@model OlnlineBanking.Models.ClientListViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -6,23 +7,72 @@
 
 <div>
     <div class="top-actions">
-         @Html.ActionLink("Add a new client", "Add")    
+         @Html.ActionLink("Add a new client", "Add", new {returnUrl = Request.Url.PathAndQuery})    
     </div>
     
     <table class="grid-data">
         <tr>
-            <th>Client Contact Number</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Date Of Birth</th>
-            <th>Phone Number</th>
-            <th>Status</th>
-            <th>Deposit</th>
+            <th>
+                @Html.ActionLink("Client Contract Number", "Index", new
+                   {
+                       page = @Model.PagingInfo.CurrentPage,
+                       sortedField = "contractnumber",
+                       sortedOrder = (Model.SortedInfo.SortedField.ToLower()=="contractnumber" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                   })
+            </th>
+            <th>
+                @Html.ActionLink("Last Name", "Index", new
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "lastname",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "lastname" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
+            </th>
+            <th>
+                @Html.ActionLink("First Name", "Index", new
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "firstname",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "firstname" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
+            </th>
+            <th>
+                @Html.ActionLink("Date Of Birth", "Index", new
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "dateofbirth",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "dateofbirth" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
+            </th>
+            <th>
+                @Html.ActionLink("Phone Number", "Index", new
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "phone",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "phone" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
+            </th>
+            <th>
+                @Html.ActionLink("Status", "Index", new
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "status",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "status" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
+            </th>
+            <th>
+                @Html.ActionLink("Deposit", "Index", new
+                {
+                    page = @Model.PagingInfo.CurrentPage,
+                    sortedField = "deposit",
+                    sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "deposit" && Model.SortedInfo.SortedOrder == Orderring.Asc) ? Orderring.Desc : Orderring.Asc
+                })
+            </th>
             <th>Actions</th>
         </tr>
         @foreach (var item in Model.Clients)
         {
-            <tr ondblclick=" location.href = '@Url.Action("Edit", "Client", new {id = item.Id})' ">
+            <tr ondblclick=" location.href = '@Url.Action("Edit", "Client", new {id = item.Id, returnUrl = Request.Url.PathAndQuery})' ">
                 <td>@item.ContractNumber</td>
                 <td>@item.LastName</td>
                 <td>@item.FirstName</td>
@@ -33,7 +83,7 @@
                 <td>
                     @using (Html.BeginForm("Delete", "Client", FormMethod.Post, new {onsubmit = "return confirm('Do you really want to delete this client?')"}))
                     {
-                        @Html.Hidden("CurrentPage",Model.PagingInfo.CurrentPage)
+                        @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
                         @Html.Hidden("Id", item.Id)
                         <input type="submit" value="Delete"/>
                     }
@@ -42,6 +92,6 @@
         }
     </table>
     <div class="pager">
-        @Html.Pages(Model.PagingInfo, p => Url.Action("Index", new {page = p}))
+        @Html.Pages(Model.PagingInfo, p => Url.Action("Index", new {page = p, selectedField = Model.SortedInfo.SortedField, selectedOrder = Model.SortedInfo.SortedOrder}))
     </div>
 </div>

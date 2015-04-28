@@ -9,6 +9,7 @@
     @using (Html.BeginForm("Edit", "Client", FormMethod.Post, new { @class = "form-ui" }))
     {
         <div class="fields floats">
+            @Html.Hidden("returnUrl",(string)ViewBag.ReturnUrl)
             @Html.EditorForModel()
         </div>
         <div class="actions floats">

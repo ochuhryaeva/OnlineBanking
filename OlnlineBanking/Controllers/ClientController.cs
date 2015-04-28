@@ -20,50 +20,91 @@ namespace OlnlineBanking.Controllers
             _clientRepository = clientRepository;
         }
         
-        //[Authorize]
-        public ActionResult Index(int page=1, int selectedClientId = 0)
+        public ActionResult Index(int page=1, string sortedField ="", Orderring sortedOrder=Orderring.Asc)
         {
-            int pageToShow = page;
-            //for selectedClientId !=0 need to find page with this id and show it
-            if (selectedClientId != 0) pageToShow = PageNumberForClientId(selectedClientId);
+            PagingInfo pagingInfo = MakePagingInfo(page);
+            SortedInfo sortedInfo = MakeSortedInfo(sortedField, sortedOrder);
+            ClientListViewModel clientListViewModel = makeClientListViewModel(pagingInfo, sortedInfo);
+            return View(clientListViewModel);
+        }
+
+
+        private PagingInfo MakePagingInfo(int page=1)
+        {
             PagingInfo pagingInfo = new PagingInfo()
             {
                 ItemsPerPage = PageSize,
                 TotalItems = _clientRepository.Clients.Count(),
-                CurrentPage = pageToShow,
+                CurrentPage = page,
             };
+            return pagingInfo;
+        }
+
+        private SortedInfo MakeSortedInfo(string sortedField = "", Orderring sortedOrder = Orderring.Asc)
+        {
+            SortedInfo sortedInfo = new SortedInfo()
+            {
+                SortedField = string.IsNullOrEmpty(sortedField) ? "ContractNumber" : sortedField,
+                SortedOrder = sortedOrder
+            };
+            return sortedInfo;
+        }
+
+        private ClientListViewModel makeClientListViewModel(PagingInfo pagingInfo, SortedInfo sortedInfo)
+        {
+            //we should form linq query with sorted info and page info
+            Func<Client,string> orderByField = client => client.ContractNumber;
+            switch (sortedInfo.SortedField.ToLower())
+            {
+                case "contractnumber":
+                    orderByField = client => client.ContractNumber;
+                    break;
+                case "firstname":
+                    orderByField = client => client.FirstName;
+                    break;
+                case "lastname":
+                    orderByField = client => client.LastName;
+                    break;
+                case "dateofbirth":
+                    orderByField = client => client.DateOfBirth.ToShortDateString();
+                    break;
+                case "phone":
+                    orderByField = client => client.Phone;
+                    break;
+                case "status":
+                    orderByField = client => client.Status.ToString();
+                    break;
+                case "deposit":
+                    orderByField = client => client.Deposit.ToString();
+                    break;
+                default:
+                    orderByField = client => client.ContractNumber;
+                    break;
+            }
+            IEnumerable<Client> clients = _clientRepository.Clients;
+
+            clients = sortedInfo.SortedOrder == Orderring.Asc ? _clientRepository.Clients.OrderBy(orderByField) : _clientRepository.Clients.OrderByDescending(orderByField);
+            clients = clients.Skip((pagingInfo.CurrentPage - 1)*pagingInfo.ItemsPerPage).Take(pagingInfo.ItemsPerPage);
+   
             ClientListViewModel clientListViewModel = new ClientListViewModel()
             {
                 PagingInfo = pagingInfo,
-                Clients =
-                    _clientRepository.Clients.OrderBy(c => c.ContractNumber).Skip((pagingInfo.CurrentPage - 1)*PageSize).Take(PageSize)
-            }; 
-            
-            return View(clientListViewModel);
+                SortedInfo = sortedInfo,
+                Clients = clients
+            };
+            return clientListViewModel;
         }
 
-        private int PageNumberForClientId(int selectedClientId)
+        public ActionResult Edit(int id, string returnUrl="")
         {
-            int page = 1;
-            var clientWithPositions = _clientRepository.Clients
-                                        .OrderBy(c => c.ContractNumber)
-                                        .Select((c, i) => new { clientPos = i + 1, clientId = c.Id });
-            var selectedClientWithPosition = clientWithPositions.FirstOrDefault(c => c.clientId == selectedClientId);
-            if (selectedClientWithPosition != null)
-            {
-                page = (int)Math.Ceiling((decimal)selectedClientWithPosition.clientPos / PageSize);
-            }
-            return page;
-        }
-
-        public ActionResult Edit(int id)
-        {
+            ViewBag.ReturnUrl = returnUrl;
             Client client = _clientRepository.Clients.FirstOrDefault(c => c.Id == id);
             return View(client);
         }
 
-        public ActionResult Add()
+        public ActionResult Add(string returnUrl="")
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View("Edit",new Client()
             {
                 DateOfBirth = new DateTime(DateTime.Now.AddYears(-30).Year,1,1)
@@ -71,12 +112,12 @@ namespace OlnlineBanking.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Client client)
+        public ActionResult Edit(Client client, string returnUrl="")
         {
             if (ModelState.IsValid)
             {
                 int clientEditId =_clientRepository.SaveClient(client);
-                return RedirectToAction("Index",new {selectedClientId=clientEditId});
+                return Redirect(string.IsNullOrEmpty(returnUrl)? Url.Action("Index"):returnUrl);
             }
             else
             {
@@ -85,12 +126,10 @@ namespace OlnlineBanking.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id, int currentPage=1)
+        public ActionResult Delete(int id, string returnUrl="")
         {
             _clientRepository.DeleteClient(id);
-            int totalPages = (int) Math.Ceiling((decimal) _clientRepository.Clients.Count()/PageSize);
-            if (totalPages > 1 && totalPages < currentPage) currentPage--;
-            return RedirectToAction("Index",new {page=currentPage});
+            return Redirect(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index") : returnUrl);
         }
     }
 }

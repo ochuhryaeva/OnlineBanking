@@ -219,6 +219,7 @@
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\ClientListViewModel.cs" />
     <Compile Include="Models\PagingInfo.cs" />
+    <Compile Include="Models\SortedInfo.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Infrastructure\Concrete\ClientDbContext.cs" />
     <Compile Include="Models\UserLoginViewModel.cs" />
