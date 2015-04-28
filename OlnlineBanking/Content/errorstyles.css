@@ -1,6 +1,10 @@
 ﻿.field-validation-error    {color: #f00;font-size: 12px}
 .field-validation-valid    { display: none;}
-.input-validation-error    { border: 1px solid #f00; background-color: #fee; }
+.input-validation-error:not(span) {
+    border: 1px solid #f00!important;
+    background-color: #fee;
+    box-shadow: inset 0 0 3px red!important;
+}
 .validation-summary-errors {
     border: 1px solid red;
     font-size: 12px;

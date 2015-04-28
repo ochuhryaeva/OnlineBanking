@@ -6,13 +6,13 @@
 
 <div class="form-default">
     <h2 class="caption">@ViewBag.Title client</h2>
-    @using (Html.BeginForm("Edit", "Client", FormMethod.Post))
+    @using (Html.BeginForm("Edit", "Client", FormMethod.Post, new { @class = "form-ui" }))
     {
         <div class="fields floats">
             @Html.EditorForModel()
         </div>
         <div class="actions floats">
-            @Html.ActionLink("< Cancel", "Index", null, new { @class = "cancel" })
+            @Html.ActionLink("Cancel", "Index", null, new { @class = "cancel button" })
             <input type="submit" class="save" value="Save" />
         </div>
     }

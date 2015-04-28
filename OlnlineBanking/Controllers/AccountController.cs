@@ -46,7 +46,6 @@ namespace OlnlineBanking.Controllers
                             if (user != null) SendBlockEmail(user.Login, user.Email);
                             //TODO: test this
                             return RedirectToAction("UserIsBlocked");
-                            //ModelState.AddModelError("", "Your user is blocked. Message with unblock information was sent on your email");
                         }
                     }
                     return View(userLoginViewModel);

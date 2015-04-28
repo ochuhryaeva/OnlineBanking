@@ -29,7 +29,7 @@
                 <td>@item.DateOfBirth.ToShortDateString()</td>
                 <td>@item.Phone</td>
                 <td>@item.Status</td>
-                <td><label>@Html.CheckBoxFor(m => item.Deposit, new {@class = "hidden"})<i class="checkbox"></i></label></td>
+                <td><label>@Html.CheckBoxFor(m => item.Deposit, new {@class = "hidden", disabled="disabled"})<i class="checkbox"></i></label></td>
                 <td>
                     @using (Html.BeginForm("Delete", "Client", FormMethod.Post, new {onsubmit = "return confirm('Do you really want to delete this client?')"}))
                     {

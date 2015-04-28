@@ -6,14 +6,14 @@
 
 <div class="form-default">
     <h2 class="caption">Please enter your credentials</h2>
-    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post, new {@class="form-ui"}))
     {
         <div class="fields floats">
             @Html.ValidationSummary(true)
             @Html.EditorForModel()
         </div>
         <div class="actions floats">
-            @Html.ActionLink("Register new account", "Register")
+            @Html.ActionLink("Register new account", "Register",null,new {@class="button"})
             <input type="submit" value="Submit" class="save"/>
         </div>
     }

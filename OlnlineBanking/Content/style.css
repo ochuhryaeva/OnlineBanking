@@ -97,6 +97,19 @@ body {
   margin-right: 10px;
   padding: 0;
 }
+#header .userinfo a {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  font-size: 15px;
+  color: #3388dd;
+  border-radius: 3px;
+  text-decoration: none;
+  vertical-align: middle;
+  background-color: #ffffff;
+  margin: 0 4px;
+  padding: 1px 8px 1px;
+}
 .grid-data {
   display: table;
   position: relative;
@@ -104,17 +117,32 @@ body {
   width: 100%;
   border: 1px solid #e2eefa;
   border-collapse: collapse;
+  box-shadow: 0px 1px 3px #8abbec;
 }
 .grid-data th {
-  background-color: #8abbec;
+  font-weight: normal;
+  font-size: 14px;
+  background-color: #3388dd;
   color: #ffffff;
+  padding: 2px 6px;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 }
 .grid-data td {
+  font-size: 14px;
   text-align: center;
   user-select: none;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+  transition: all .1s linear;
+  cursor: pointer;
 }
 .grid-data tr:nth-child(odd) td {
   background-color: #e2eefa;
+}
+.grid-data tr:hover td {
+  box-shadow: inset 0 3px 3px -2px #3388dd;
+  background-color: #8abbec;
+  color: #ffffff;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.2);
 }
 /* checkbox & radio */
 .checkbox:before,
@@ -153,21 +181,83 @@ input[type=radio]:checked ~ .checkbox-after:after {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 40px;
+  height: 32px;
+  line-height: 32px;
   text-align: right;
   padding-right: 10px;
+  margin-bottom: 10px;
 }
 .form-default .fields .editor-field {
   float: right;
   width: 64%;
-  height: 40px;
+  height: 32px;
+  margin-bottom: 10px;
 }
-.form-default .fields .editor-field input:not([type='checkbox']) {
+.form-default .fields .editor-field input:not([type='checkbox']),
+.form-default .fields .editor-field textarea,
+.form-default .fields .editor-field select {
   display: block;
   position: relative;
   box-sizing: border-box;
   margin: 0;
   width: 100%;
+  padding: 0 10px;
+  height: inherit;
+  outline: 0 none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: inset 0 0 3px #ccc;
+  transition: all .3s linear;
+}
+.form-default .fields .editor-field input:not([type='checkbox']):hover,
+.form-default .fields .editor-field textarea:hover,
+.form-default .fields .editor-field select:hover {
+  border-color: #999;
+  box-shadow: inset 0 0 3px #999;
+}
+.form-default .fields .editor-field input:not([type='checkbox']):focus,
+.form-default .fields .editor-field textarea:focus,
+.form-default .fields .editor-field select:focus {
+  border-color: #3ad;
+  box-shadow: inset 0 0 3px #3ad;
+}
+.form-default .button,
+.form-default button,
+.form-default input[type=button],
+.form-default [type=submit],
+.form-default [type=reset] {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  text-decoration: none;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  background: #ddd;
+  border-radius: 3px;
+  box-shadow: 0 0 3px #ccc;
+  transition: all .3s linear;
+}
+.form-default .button:hover,
+.form-default button:hover,
+.form-default input[type=button]:hover,
+.form-default [type=submit]:hover,
+.form-default [type=reset]:hover {
+  background: #eee;
+  color: #333;
+  border-color: #18c;
+  box-shadow: inset 0 0 3px #18c;
+}
+.form-default [type=submit] {
+  color: #fff;
+  border-color: #18c;
+  background: #3ad;
+  box-shadow: inset 0 0 3px #18c;
+}
+.form-default .fields .editor-field input[type=checkbox] {
+  height: inherit;
 }
 .form-default .fields .field-validation-error {
   white-space: nowrap;
@@ -212,9 +302,10 @@ input[type=radio]:checked ~ .checkbox-after:after {
   display: block;
   position: absolute;
   right: -32px;
-  top: -12px;
+  top: -16px;
 }
 .top-actions {
+  margin: 0 0 4px;
   text-align: right;
 }
 .pager {
@@ -223,7 +314,8 @@ input[type=radio]:checked ~ .checkbox-after:after {
   margin: 10px 0 0;
   text-align: center;
 }
-.pager a {
+.pager a,
+.top-actions a {
   display: inline-block;
   position: relative;
   text-decoration: none;
@@ -239,9 +331,12 @@ input[type=radio]:checked ~ .checkbox-after:after {
   border-radius: 3px;
   box-shadow: 0 1px #aaa,inset 0 5px 10px #fff;
   text-align: center;
+  transition: all .2s linear;
 }
 .pager a:hover,
-.pager a.active {
+.top-actions a:hover,
+.pager a.active,
+.top-actions a.active {
   background: #3388dd;
   color: #ffffff;
   border-color: #3388dd;

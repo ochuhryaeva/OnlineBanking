@@ -93,13 +93,24 @@ html, body {
     }
 }
 
-#header .userinfo{
+#header .userinfo {
     .default-rules;
     text-align:right;
     color:@fontcolor;
     margin:0;
     margin-right:10px;
     padding:0;
+    a {
+        .default-rules(inline-block);
+        font-size:15px;
+        color:@color;
+        border-radius:3px;
+        text-decoration:none;
+        vertical-align:middle;
+        background-color:@fontcolor;
+        margin:0 4px;
+        padding:1px 8px 1px;
+    }
 }
 
 .grid-data{
@@ -107,14 +118,32 @@ html, body {
     width:100%;
     border:1px solid @color-b;
     border-collapse: collapse;
+    box-shadow:0px 1px 3px @color-a;
     th{
-        background-color:@color-a; 
+        font-weight:normal;
+        font-size:14px;
+        background-color:@color; 
         color:@fontcolor;
+        padding:2px 6px;
+        text-shadow:0 -1px rgba(0,0,0,.3);
     }
-    td {text-align:center;user-select:none}
+    td {
+        font-size:14px;
+        text-align:center;
+        user-select:none;
+        text-shadow:0 1px rgba(255,255,255,.5);
+        transition:all .1s linear;
+        cursor:pointer;
+    }
     tr:nth-child(odd) td{
         background-color:@color-b
-    }    
+    }
+    tr:hover td {
+        box-shadow:inset 0 3px 3px -2px @color;
+        background-color:@color-a;
+        color:@fontcolor;
+        text-shadow:0 -1px rgba(0,0,0,.2);
+    }
 }
 
 /* checkbox & radio */
@@ -160,23 +189,91 @@ input {
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    height:40px;
+    height:32px;
+    line-height:32px;
     text-align:right;
-    padding-right:10px;   
+    padding-right:10px;
+    margin-bottom:10px;   
 }
 
 .form-default .fields .editor-field{
     float:right;
     width:64%;
-    height:40px;
+    height:32px;
+    margin-bottom:10px;
 }
 
-.form-default .fields .editor-field input:not([type='checkbox']){
+.form-default .fields .editor-field input:not([type='checkbox']),
+.form-default .fields .editor-field textarea,
+.form-default .fields .editor-field select
+{
     display:block;
     position:relative;
     box-sizing:border-box;
     margin:0;
-    width:100%;       
+    width:100%;
+    padding:0 10px;
+    height:inherit;
+    outline:0 none;
+    border:1px solid #ccc;
+    border-radius:3px;
+    box-shadow:inset 0 0 3px #ccc;
+    transition: all .3s linear;
+}
+
+.form-default .fields .editor-field input:not([type='checkbox']):hover,
+.form-default .fields .editor-field textarea:hover,
+.form-default .fields .editor-field select:hover {
+    border-color:#999;
+    box-shadow:inset 0 0 3px #999;
+}
+
+.form-default .fields .editor-field input:not([type='checkbox']):focus,
+.form-default .fields .editor-field textarea:focus,
+.form-default .fields .editor-field select:focus {
+    border-color:#3ad;
+    box-shadow:inset 0 0 3px #3ad;
+}
+.form-default .button,
+.form-default button,
+.form-default input[type=button],
+.form-default [type=submit],
+.form-default [type=reset] {
+    cursor:pointer;
+    display:inline-block;
+    position:relative;
+    box-sizing:border-box;
+    text-decoration:none;
+    height:32px;
+    line-height:32px;
+    padding:0 10px;
+    border:1px solid #ccc;
+    background:#ddd;
+    border-radius:3px;
+    box-shadow:0 0 3px #ccc;
+    transition:all .3s linear;
+}
+
+.form-default .button:hover,
+.form-default button:hover,
+.form-default input[type=button]:hover,
+.form-default [type=submit]:hover,
+.form-default [type=reset]:hover {
+    background:#eee;
+    color:#333;
+    border-color:#18c;
+    box-shadow:inset 0 0 3px #18c;
+}
+
+.form-default [type=submit] {
+    color:#fff;
+    border-color:#18c;
+    background:#3ad;
+    box-shadow:inset 0 0 3px #18c;
+}
+
+.form-default .fields .editor-field input[type=checkbox] {
+    height:inherit;
 }
 
 .form-default .fields .field-validation-error{
@@ -228,12 +325,38 @@ input {
         display: block;
         position: absolute;
         right: -32px;
-        top: -12px;
+        top: -16px;
     }
 }
 
 .top-actions{
+    margin:0 0 4px;
     text-align:right;
+}
+
+.button() {
+    display: inline-block;
+    position: relative;
+    text-decoration:none;
+    box-sizing: border-box;
+    height: 24px;
+    min-width: 28px;
+    line-height: 24px;
+    padding: 0 6px;
+    margin: 0 1px;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    box-shadow: 0 1px #aaa,inset 0 5px 10px #fff;
+    text-align: center;
+    transition:all .2s linear;
+    &:hover, &.active{
+        background:@color;
+        color:@fontcolor;
+        border-color:@color;
+        box-shadow:0 1px @color;
+    }
 }
 
 .pager{
@@ -241,28 +364,6 @@ input {
     position:relative;
     margin: 10px 0 0;
     text-align:center;
-    a{
-          display: inline-block;
-          position: relative;
-          text-decoration:none;
-          box-sizing: border-box;
-          height: 24px;
-          min-width: 28px;
-          line-height: 24px;
-          padding: 0 6px;
-          margin: 0 1px;
-          background: #f0f0f0;
-          color: #333;
-          border: 1px solid #eee;
-          border-radius: 3px;
-          box-shadow: 0 1px #aaa,inset 0 5px 10px #fff;
-          text-align: center;
-          &:hover, &.active{
-              background:@color;
-              color:@fontcolor;
-              border-color:@color;
-              box-shadow:0 1px @color;
-          }  
-    }
 }
+.pager a, .top-actions a {.button();}
    
