@@ -22,11 +22,11 @@ namespace OlnlineBanking.Tests
         {
             _clientRepositoryMock = new Mock<IClientRepository>();
             _clientRepositoryMock.Setup(m => m.Clients).Returns(new Client[] {
-                new Client {Id = 1, ContractNumber = "P1"},
-                new Client {Id = 2, ContractNumber = "P2"},
-                new Client {Id = 3, ContractNumber = "P3"},
-                new Client {Id = 4, ContractNumber = "P4"},
-                new Client {Id = 5, ContractNumber = "P5"}
+                new Client {Id = 1, ContractNumber = "P1", LastName = "One", FirstName = "One", DateOfBirth = new DateTime(1979,1,1), Phone = "767889"},
+                new Client {Id = 2, ContractNumber = "P2", LastName = "Two", FirstName = "Two", DateOfBirth = new DateTime(1979,4,1), Phone = "789989"},
+                new Client {Id = 3, ContractNumber = "P3", LastName = "Three", FirstName = "Three", DateOfBirth = new DateTime(1979,7,1), Phone = "11111"},
+                new Client {Id = 4, ContractNumber = "P4", LastName = "Four", FirstName = "Four", DateOfBirth = new DateTime(1980,1,1), Phone = "45757"},
+                new Client {Id = 5, ContractNumber = "P5", LastName = "Five",FirstName = "Five", DateOfBirth = new DateTime(1976,1,1), Phone = "99"}
             });
         }
         
@@ -36,7 +36,7 @@ namespace OlnlineBanking.Tests
         }
 
         [Test]
-        public void Can_Paginate()
+        public void Index_ForCustomPage_CanPaginate()
         {
             // Arrange
             ClientController controller = GetClientController();
@@ -46,14 +46,102 @@ namespace OlnlineBanking.Tests
             ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2)). Model;
             
             // Assert
-            Client[] prodArray = result.Clients.ToArray();
-            Assert.IsTrue(prodArray.Length == 2);
-            Assert.AreEqual(prodArray[0].ContractNumber, "P4");
-            Assert.AreEqual(prodArray[1].ContractNumber, "P5");
+            Client[] clients= result.Clients.ToArray();
+            Assert.IsTrue(clients.Length == 2);
+            Assert.AreEqual(clients[0].ContractNumber, "P4");
+            Assert.AreEqual(clients[1].ContractNumber, "P5");
         }
 
         [Test]
-        public void Can_Generate_Page_Links()
+        public void Index_ForCustomPage_ReturnCorrectPagingInfo()
+        {
+
+            // Arrange
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
+
+            // Act
+            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2)).Model;
+
+            // Assert
+            PagingInfo pageInfo = result.PagingInfo;
+            Assert.AreEqual(pageInfo.CurrentPage, 2);
+            Assert.AreEqual(pageInfo.ItemsPerPage, 3);
+            Assert.AreEqual(pageInfo.TotalItems, 5);
+            Assert.AreEqual(pageInfo.TotalPages, 2);
+        }
+
+        [Test]
+        public void Index_ForCustomSortingAsc_ReturnCorrectSortedInfo()
+        {
+            // Arrange
+            ClientController controller = GetClientController();
+            // Act
+            foreach (var property in typeof(Client).GetProperties())
+            {
+                if (property.Name.ToLower() != "id")
+                {
+                    string propertyName = property.Name;
+                    ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(1, propertyName, Orderring.Asc)).Model;
+                    // Assert
+                    SortedInfo sortedInfo = result.SortedInfo;
+                    Assert.AreEqual(propertyName, sortedInfo.SortedField);
+                    Assert.AreEqual(Orderring.Asc, sortedInfo.SortedOrder);
+    
+                }
+            }
+        }
+     
+        [Test]
+        public void Index_ForCustomSortingDesc_ReturnCorrectSortedInfo()
+        {
+            ClientController controller = GetClientController();
+            // Act
+            foreach (var property in typeof(Client).GetProperties())
+            {
+                if (property.Name.ToLower() != "id")
+                {
+                    string propertyName = property.Name;
+                    ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(1, propertyName, Orderring.Desc)).Model;
+                    // Assert
+                    SortedInfo sortedInfo = result.SortedInfo;
+                    Assert.AreEqual(propertyName, sortedInfo.SortedField);
+                    Assert.AreEqual(Orderring.Desc, sortedInfo.SortedOrder);
+
+                }
+            }
+        }
+
+        [Test]
+        public void Index_ForContractNumberSortDesc_ReturnCorrectClientListViewModel()
+        {
+            // Arrange
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
+            // Act
+            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2, "ContractNumber", Orderring.Desc)).Model;
+            Client[] clients = result.Clients.ToArray();
+            Assert.IsTrue(clients.Length == 2);
+            Assert.AreEqual(clients[0].ContractNumber, "P2");
+            Assert.AreEqual(clients[1].ContractNumber, "P1");
+        }
+
+        [Test]
+        public void Index_ForContractNumberSortAsc_ReturnCorrectClientListViewModel()
+        {
+            // Arrange
+            ClientController controller = GetClientController();
+            controller.PageSize = 3;
+            // Act
+            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2, "ContractNumber", Orderring.Asc)).Model;
+            Client[] clients = result.Clients.ToArray();
+            Assert.IsTrue(clients.Length == 2);
+            Assert.AreEqual(clients[0].ContractNumber, "P4");
+            Assert.AreEqual(clients[1].ContractNumber, "P5");
+        }
+
+        [Test]
+        public void PagingHelper_ForCustomPagingInfo_GeneratePageLinks()
         {
             // Arrange
             HtmlHelper myHelper = null;
@@ -79,28 +167,10 @@ namespace OlnlineBanking.Tests
                 result.ToString());
    
         }
+        
 
         [Test]
-        public void Can_Send_Pagination_View_Model()
-        {
-
-            // Arrange
-            ClientController controller = GetClientController();
-            controller.PageSize = 3;
-
-            // Act
-            ClientListViewModel result = (ClientListViewModel)((ViewResult)controller.Index(2)).Model;
-
-            // Assert
-            PagingInfo pageInfo = result.PagingInfo;
-            Assert.AreEqual(pageInfo.CurrentPage, 2);
-            Assert.AreEqual(pageInfo.ItemsPerPage, 3);
-            Assert.AreEqual(pageInfo.TotalItems, 5);
-            Assert.AreEqual(pageInfo.TotalPages, 2);
-        }
-
-        [Test]
-        public void Can_Edit_Client()
+        public void Edit_ForExistingClient_ReturnEditViewWithCorrectModel()
         {
 
             // Arrange - create the mock repository
@@ -119,7 +189,7 @@ namespace OlnlineBanking.Tests
         }
 
         [Test]
-        public void Can_Edit_NonExistent_Client()
+        public void Edit_ForNotExistingClient_ReturnNull()
         {
             // Arrange - create the mock repository
             ClientController controller = GetClientController();
@@ -133,7 +203,7 @@ namespace OlnlineBanking.Tests
         }
 
         [Test]
-        public void Can_AddClient()
+        public void Add_ForNewClient_ReturnViewWithCorrectModel()
         {
             // Arrange - create the mock repository
             ClientController controller = GetClientController();
@@ -147,7 +217,7 @@ namespace OlnlineBanking.Tests
         }
 
         [Test]
-        public void Can_Save_Valid_Changes()
+        public void Edit_IfModelIsValid_SaveChanges()
         {
 
             // Arrange - create mock repository
@@ -165,7 +235,7 @@ namespace OlnlineBanking.Tests
             };
 
             // Act - try to save the product
-            ActionResult result = controller.Edit(client);
+            ActionResult result = controller.Edit(client,"returnUrl");
 
             // Assert - check that the repository was called
             _clientRepositoryMock.Verify(m => m.SaveClient(client));
@@ -174,7 +244,7 @@ namespace OlnlineBanking.Tests
         }
 
         [Test]
-        public void Cannot_Save_Invalid_Changes()
+        public void Edit_IfModelIsInvalid_NotSaveChanges()
         {
 
             // Arrange - create mock repository
@@ -211,10 +281,10 @@ namespace OlnlineBanking.Tests
             ClientController controller = GetClientController();
             int clientId = 1;
             //act
-            ActionResult result = controller.Delete(clientId);
+            ActionResult result = controller.Delete(clientId,"returnUrl");
             //assert
             _clientRepositoryMock.Verify(m=>m.DeleteClient(clientId));
-            Assert.IsInstanceOf<RedirectToRouteResult>(result);
+            Assert.IsInstanceOf<RedirectResult>(result);
         }
     }
 }
