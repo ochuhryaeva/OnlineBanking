@@ -24,7 +24,7 @@ namespace OlnlineBanking.Controllers
         {
             PagingInfo pagingInfo = MakePagingInfo(page);
             SortedInfo sortedInfo = MakeSortedInfo(sortedField, sortedOrder);
-            ClientListViewModel clientListViewModel = makeClientListViewModel(pagingInfo, sortedInfo, statusFilter);
+            ClientListViewModel clientListViewModel = MakeClientListViewModel(pagingInfo, sortedInfo, statusFilter);
             return View(clientListViewModel);
         }
 
@@ -50,7 +50,7 @@ namespace OlnlineBanking.Controllers
             return sortedInfo;
         }
 
-        private ClientListViewModel makeClientListViewModel(PagingInfo pagingInfo, SortedInfo sortedInfo, ClientStatus? statusFilter)
+        private ClientListViewModel MakeClientListViewModel(PagingInfo pagingInfo, SortedInfo sortedInfo, ClientStatus? statusFilter)
         {
             //we should form linq query with sorted info and paging info 
             Func<Client,string> orderByField = client => client.ContractNumber;
