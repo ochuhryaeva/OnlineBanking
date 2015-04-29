@@ -157,7 +157,6 @@
     <Content Include="Content\errors.min.css">
       <DependentUpon>errors.css</DependentUpon>
     </Content>
-    <Content Include="Content\errorstyles.css" />
     <Content Include="Content\print.css">
       <DependentUpon>print.less</DependentUpon>
     </Content>
