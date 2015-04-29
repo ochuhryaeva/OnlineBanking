@@ -152,6 +152,12 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\errorstyles.css" />
+    <Content Include="Content\print.css">
+      <DependentUpon>print.less</DependentUpon>
+    </Content>
+    <Content Include="Content\print.min.css">
+      <DependentUpon>print.css</DependentUpon>
+    </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Content\style.css">
       <DependentUpon>style.less</DependentUpon>
@@ -166,6 +172,10 @@
     <Content Include="Content\style.less" />
     <Content Include="Content\style.css.map">
       <DependentUpon>style.css</DependentUpon>
+    </Content>
+    <Content Include="Content\print.less" />
+    <Content Include="Content\print.css.map">
+      <DependentUpon>print.css</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

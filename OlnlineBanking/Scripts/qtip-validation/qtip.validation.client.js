@@ -1,14 +1,14 @@
 ﻿$(document).ready(function () {
     //validation - make sure this is included after jquery.validate.unobtrusive.js
     //unobtrusive validate plugin overrides all defaults, so override them again
-    $('form').each(function () {
+    $('.form-ui').each(function () {
         OverrideUnobtrusiveSettings(this);
     });
     //in case someone calls $.validator.unobtrusive.parse, override it also
     var oldUnobtrusiveParse = $.validator.unobtrusive.parse;
     $.validator.unobtrusive.parse = function (selector) {
         oldUnobtrusiveParse(selector);
-        $('form').each(function () {
+        $('.form-ui').each(function () {
             OverrideUnobtrusiveSettings(this);
         });
     };

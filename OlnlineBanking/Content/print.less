@@ -1,0 +1,30 @@
+﻿.not-printable{
+    display:none!important;
+}
+
+#body {
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  .grid-data {
+      box-shadow:none;
+      border:1px solid #000;
+      border-collapse:collapse;
+      th, th a {
+          background-color:#000;
+          color:#fff;
+          text-shadow:none;
+          text-decoration:none;
+      }
+      td {
+          border:1px solid #000;
+          background-color:#fff;
+          text-shadow:none;
+          .checkbox:before {
+              background-color:#fff;
+              color:#000;
+          }
+      }
+      td, th {padding:4px 6px;}
+  }
+}

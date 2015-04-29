@@ -3,21 +3,22 @@
 
 @{
     ViewBag.Title = "Index";
+    Html.EnableClientValidation(false);
+    Html.EnableUnobtrusiveJavaScript(false);
 }
 
 <div>
-    <div class="top-actions">
-        @using (Html.BeginForm("Index", "Client", FormMethod.Get))
-        {
-            @Html.Hidden("page",1)
-            @Html.Hidden("sortedField", Model.SortedInfo.SortedField)
-            @Html.Hidden("sortedOrder",Model.SortedInfo.SortedOrder)
-            @Html.DropDownListFor(m => m.StatusFilter,
-                new SelectList(new[] { "All" }.Concat(Enum.GetNames(typeof(ClientStatus))), Model.StatusFilter.ToString()))
-            <input type="submit" value="filter" />
-        }
-        @Html.ActionLink("Add a new client", "Add", new { returnUrl = Request.Url.PathAndQuery })
-    </div>
+    @using (Html.BeginForm("Index", "Client", FormMethod.Get,new {@class="top-actions not-printable"}))
+    {
+        @Html.Hidden("page",1)
+        @Html.Hidden("sortedField", Model.SortedInfo.SortedField)
+        @Html.Hidden("sortedOrder",Model.SortedInfo.SortedOrder)
+        @Html.DropDownListFor(m=>m.StatusFilter,
+            new SelectList(new[] { "All" }.Concat(Enum.GetNames(typeof(ClientStatus))), Model.StatusFilter.ToString()),
+            new {onchange="this.form.submit()"})
+        @Html.ActionLink("Add a new client", "Add", new { returnUrl = Request.Url.PathAndQuery})
+        <a href="javascript:window.print()">Print</a>
+    }
 
     <table class="grid-data">
         <tr>
@@ -28,8 +29,13 @@
                     sortedField = "contractnumber",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "contractnumber" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "contractnumber"? Model.SortedInfo.SortedOrder == Ordering.Asc? "Asc" : "Desc" : ""
                 })
             </th>
+
             <th>
                 @Html.ActionLink("Last Name", "Index", new
                 {
@@ -37,6 +43,10 @@
                     sortedField = "lastname",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "lastname" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "lastname" ? Model.SortedInfo.SortedOrder == Ordering.Asc ? "Asc" : "Desc" : ""
                 })
             </th>
             <th>
@@ -46,6 +56,10 @@
                     sortedField = "firstname",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "firstname" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "firstname" ? Model.SortedInfo.SortedOrder == Ordering.Asc ? "Asc" : "Desc" : ""
                 })
             </th>
             <th>
@@ -55,6 +69,10 @@
                     sortedField = "dateofbirth",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "dateofbirth" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "dateofbirth" ? Model.SortedInfo.SortedOrder == Ordering.Asc ? "Asc" : "Desc" : ""
                 })
             </th>
             <th>
@@ -64,6 +82,10 @@
                     sortedField = "phone",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "phone" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "phone" ? Model.SortedInfo.SortedOrder == Ordering.Asc ? "Asc" : "Desc" : ""
                 })
             </th>
             <th>
@@ -73,6 +95,10 @@
                     sortedField = "status",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "status" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "status" ? Model.SortedInfo.SortedOrder == Ordering.Asc ? "Asc" : "Desc" : ""
                 })
             </th>
             <th>
@@ -82,9 +108,13 @@
                     sortedField = "deposit",
                     sortedOrder = (Model.SortedInfo.SortedField.ToLower() == "deposit" && Model.SortedInfo.SortedOrder == Ordering.Asc) ? Ordering.Desc : Ordering.Asc,
                     statusFilter = Model.StatusFilter
+                },
+                new
+                {
+                    @class = Model.SortedInfo.SortedField.ToLower() == "deposit" ? Model.SortedInfo.SortedOrder == Ordering.Asc ? "Asc" : "Desc" : ""
                 })
             </th>
-            <th>Actions</th>
+            <th class="not-printable">Actions</th>
         </tr>
         @foreach (var item in Model.Clients)
         {
@@ -96,7 +126,7 @@
                 <td>@item.Phone</td>
                 <td>@item.Status</td>
                 <td><label>@Html.CheckBoxFor(m => item.Deposit, new { @class = "hidden", disabled = "disabled" })<i class="checkbox"></i></label></td>
-                <td>
+                <td class="not-printable">
                     @using (Html.BeginForm("Delete", "Client", FormMethod.Post, new { onsubmit = "return confirm('Do you really want to delete this client?')" }))
                     {
                         @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
@@ -107,7 +137,7 @@
             </tr>
         }
     </table>
-    <div class="pager">
+    <div class="pager not-printable">
         @Html.Pages(Model.PagingInfo, p => Url.Action("Index", new
         {
             page = p,

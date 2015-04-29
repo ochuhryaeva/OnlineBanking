@@ -120,12 +120,33 @@ html, body {
     border-collapse: collapse;
     box-shadow:0px 1px 3px @color-a;
     th{
+        position:relative;
         font-weight:normal;
         font-size:14px;
         background-color:@color; 
         color:@fontcolor;
         padding:2px 6px;
         text-shadow:0 -1px rgba(0,0,0,.3);
+        a{
+            color:@fontcolor;
+            text-decoration:none;
+            &.Asc:after, &.Desc:after{
+                content: '';
+                display: inline-block;
+                position: relative;
+                vertical-align: baseline;
+                top:-1px;
+                margin: 0 0 0 5px;
+                border-style: solid;
+                border-width: 6px 4px 0;
+                border-color: @fontcolor transparent transparent;
+                transition: border .5s linear;
+            }
+            &.Desc:after{
+                border-width: 0 4px 6px;
+                border-color: transparent transparent @fontcolor;
+            }
+        }
     }
     td {
         font-size:14px;
@@ -366,4 +387,3 @@ input {
     text-align:center;
 }
 .pager a, .top-actions a {.button();}
-   
