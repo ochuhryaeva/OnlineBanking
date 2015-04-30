@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Models;
@@ -12,7 +10,7 @@ namespace OlnlineBanking.Controllers
     [Authorize]
     public class ClientController : Controller
     {
-        private IClientRepository _clientRepository;
+        private readonly IClientRepository _clientRepository;
         public int PageSize = 7;
 
         public ClientController(IClientRepository clientRepository)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Models;
 
@@ -11,8 +6,7 @@ namespace OlnlineBanking.Infrastructure.Concrete
 {
     public class ClientRepository:IClientRepository
     {
-        //private ClientDbContext _context = new ClientDbContext();
-        private ClientDbContext _context;
+        private readonly ClientDbContext _context;
 
         public ClientRepository(ClientDbContext context)
         {
@@ -38,17 +32,21 @@ namespace OlnlineBanking.Infrastructure.Concrete
                 Client clientEntry = _context.Clients.Find(client.Id);
                 if (clientEntry != null)
                 {
-                    foreach (var property in client.GetType().GetProperties())
-                    {
-                        var value = client.GetType().GetProperty(property.Name).GetValue(client);
-                        clientEntry.GetType().GetProperty(property.Name).SetValue(clientEntry,value);
-                    }
+                    UpdateClientEntry(clientEntry,client);   
                 }
             }
             _context.SaveChanges();
             return client.Id;
         }
 
+        private void UpdateClientEntry(Client clientTarget, Client clientSource)
+        {
+            foreach (var property in clientSource.GetType().GetProperties())
+            {
+                var value = clientSource.GetType().GetProperty(property.Name).GetValue(clientSource);
+                clientTarget.GetType().GetProperty(property.Name).SetValue(clientTarget, value);
+            }
+        }
 
         public void DeleteClient(int clientId)
         {

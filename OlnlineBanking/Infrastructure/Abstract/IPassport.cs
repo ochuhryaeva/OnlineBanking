@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
-using Microsoft.Owin.Security;
+﻿using System.Diagnostics.Contracts;
 using OlnlineBanking.Infrastructure.Concrete;
 using OlnlineBanking.Models;
 

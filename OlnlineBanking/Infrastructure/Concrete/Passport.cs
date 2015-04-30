@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+using System.Reflection;
 using System.Web.Security;
 using log4net;
-using Microsoft.Owin.Logging;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Models;
 
@@ -17,11 +10,11 @@ namespace OlnlineBanking.Infrastructure.Concrete
 {
     public class Passport : IPassport
     {
-        private IUserRepository _userRepository;
-        private IConfig _configManager;
+        private readonly IUserRepository _userRepository;
+        private readonly IConfig _configManager;
 
-        private readonly log4net.ILog _logger =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog _logger =
+            LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
         public Passport(IUserRepository userRepository, IConfig configManager)
         {

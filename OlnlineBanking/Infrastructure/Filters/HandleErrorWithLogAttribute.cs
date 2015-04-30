@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Reflection;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
+using log4net;
 
 namespace OlnlineBanking.Infrastructure.Filters
 {
@@ -12,7 +10,7 @@ namespace OlnlineBanking.Infrastructure.Filters
         public override void OnException(ExceptionContext filterContext)
         {
             //logging exception
-            log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             StringBuilder errorDescription = new StringBuilder();
             errorDescription.AppendLine();
             errorDescription.AppendLine("exception message:" + filterContext.Exception.Message);

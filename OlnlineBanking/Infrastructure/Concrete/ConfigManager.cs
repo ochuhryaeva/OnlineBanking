@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net.Configuration;
-using System.Web;
+﻿using System.Configuration;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Infrastructure.Config;
 
@@ -12,7 +7,7 @@ namespace OlnlineBanking.Infrastructure.Concrete
     public class ConfigManager: IConfig
     {
 
-        public Config.MailSetting MailSetting
+        public MailSetting MailSetting
         {
             get
             {
@@ -20,7 +15,7 @@ namespace OlnlineBanking.Infrastructure.Concrete
             }
         }
 
-        public Config.PassportSetting PassportSetting
+        public PassportSetting PassportSetting
         {
             get
             {

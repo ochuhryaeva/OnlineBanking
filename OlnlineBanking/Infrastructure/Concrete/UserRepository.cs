@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Models;
 
@@ -38,15 +33,19 @@ namespace OlnlineBanking.Infrastructure.Concrete
                 User userEntry = _context.Users.Find(user.Id);
                 if (userEntry != null)
                 {
-                    foreach (var property in user.GetType().GetProperties())
-                    {
-                        var value = user.GetType().GetProperty(property.Name).GetValue(user);
-                        userEntry.GetType().GetProperty(property.Name).SetValue(userEntry, value);
-                    }
+                    UpdateUserEntry(userEntry,user);
                 }
             }
             _context.SaveChanges();
+        }
 
+        private void UpdateUserEntry(User userTarget, User userSource)
+        {
+            foreach (var property in userSource.GetType().GetProperties())
+            {
+                var value = userSource.GetType().GetProperty(property.Name).GetValue(userSource);
+                userSource.GetType().GetProperty(property.Name).SetValue(userSource, value);
+            }
         }
     }
 }

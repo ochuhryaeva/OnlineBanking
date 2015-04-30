@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Web;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Models;
 
@@ -11,13 +8,13 @@ namespace OlnlineBanking.Infrastructure.Concrete
     [ContractClassFor(typeof(IPassport))]
     public abstract class PassportContract: IPassport
     {
-        public LoginResult Login(Models.UserLoginViewModel userLoginInfo)
+        public LoginResult Login(UserLoginViewModel userLoginInfo)
         {
             Contract.Requires(userLoginInfo!=null);
             return 0;
         }
 
-        public RegisterResult Register(Models.UserRegisterViewModel userRegisterInfo)
+        public RegisterResult Register(UserRegisterViewModel userRegisterInfo)
         {
             Contract.Requires(userRegisterInfo != null);
             return 0;

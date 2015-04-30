@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NUnit.Framework;
 using OlnlineBanking.Controllers;
 using OlnlineBanking.HtmlHelpers;
 using OlnlineBanking.Infrastructure.Abstract;
 using OlnlineBanking.Models;
-using Assert = NUnit.Framework.Assert;
 
 namespace OlnlineBanking.Tests
 {

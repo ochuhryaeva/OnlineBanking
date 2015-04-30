@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Web;
+﻿using System.Diagnostics.Contracts;
 using OlnlineBanking.Infrastructure.Abstract;
 
 namespace OlnlineBanking.Infrastructure.Concrete
