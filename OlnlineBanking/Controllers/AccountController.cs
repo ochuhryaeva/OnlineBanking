@@ -40,7 +40,6 @@ namespace OlnlineBanking.Controllers
                         {
                             User user = _passport.GetUserByLogin(userLoginViewModel.Login);
                             if (user != null) SendBlockEmail(user.Login, user.Email);
-                            //TODO: test this
                             return RedirectToAction("UserIsBlocked");
                         }
                     }
